@@ -6,16 +6,15 @@ public class Customer {
 
     private int id;
     private String firstName;
-    private String lasttName;
-
+    private String lastName;
     private String email;
     private String password;
     private ArrayList<Coupon> coupons;
 
-    public Customer(int id, String firstName, String lasttName, String email, String password) {
+    public Customer(int id, String firstName, String lastName, String email, String password) {
         this.id = id;
         this.firstName = firstName;
-        this.lasttName = lasttName;
+        this.lastName = lastName;
         this.email = email;
         this.password = password;
     }
@@ -42,14 +41,20 @@ public class Customer {
         this.email = email;
     }
 
+    public String getLastName() {
+        return lastName;
+    }
 
+    public String getFirstName() {
+        return firstName;
+    }
 
     @Override
     public String toString() {
         return "Customer{" +
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
-                ", lasttName='" + lasttName + '\'' +
+                ", lasttName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", coupons=" + coupons +

@@ -2,6 +2,7 @@ package DAO;
 
 import Beans.Company;
 import Beans.Customer;
+import Exceptions.CouponSystemException;
 
 import java.util.ArrayList;
 
@@ -15,7 +16,7 @@ public interface CustomersDAO {
 
     boolean isCustomerExists(String email,String password);
 
-    void addCustomer(Customer customer);
+    int addCustomer(Customer customer) throws CouponSystemException;
 
     void updateCustomer(Customer customer);
 
