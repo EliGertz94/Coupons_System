@@ -4,6 +4,7 @@ import Beans.Company;
 import Beans.Customer;
 import Exceptions.CouponSystemException;
 
+import java.net.ConnectException;
 import java.util.ArrayList;
 
 public interface CustomersDAO {
@@ -18,7 +19,7 @@ public interface CustomersDAO {
 
     int addCustomer(Customer customer) throws CouponSystemException;
 
-    void updateCustomer(Customer customer);
+    void updateCustomer(Customer customer) throws CouponSystemException;
 
     void deleteCustomer(int customerId);
 

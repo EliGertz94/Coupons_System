@@ -6,6 +6,7 @@ import ConnectionPoolRelated.ConnectionPool;
 import DAO.CustomersDAO;
 import Exceptions.CouponSystemException;
 
+import java.net.ConnectException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -72,9 +73,30 @@ public class CustomersDBDAO implements CustomersDAO {
 
     }
 
-    @Override
-    public void updateCustomer(Customer customer) {
+    //create table `customer`(`id` int NOT NULL PRIMARY KEY auto_increment,
+    // `FIRST_NAME` varchar(25),
+    //  `LAST_NAME` varchar(25),
+    // `email` varchar(50) UNIQUE NOT NULL,
+    // `password` varchar(60) NOT NULL );
 
+    @Override
+    public void updateCustomer(Customer customer) throws  CouponSystemException {
+        String sql = "UPDATE customer SET FIRST_NAME = ?,LAST_NAME = ?, email = ?, password=? WHERE id = ?";
+        try(Connection con = ConnectionPool.getInstance().getConnection();
+            PreparedStatement ps = con.prepareStatement(sql);) {
+
+            // set the preparedstatement parameters
+            ps.setString(1,customer.getFirstName());
+            ps.setString(2,customer.getLastName());
+            ps.setString(3,customer.getEmail());
+            ps.setString(4,customer.getPassword());
+            ps.setInt(5,customer.getId());
+
+
+            ps.executeUpdate();
+        } catch (SQLException | CouponSystemException e) {
+            throw new CouponSystemException("update error at Company");
+        }
     }
 
     @Override

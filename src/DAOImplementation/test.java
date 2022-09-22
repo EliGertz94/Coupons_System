@@ -1,8 +1,10 @@
 package DAOImplementation;
 
 import Beans.Company;
+import Beans.Customer;
 import ConnectionPoolRelated.ConnectionPool;
 import DAO.CompaniesDAO;
+import DAO.CustomersDAO;
 import Exceptions.CouponSystemException;
 
 import java.net.ConnectException;
@@ -15,22 +17,17 @@ public class test {
     public static void main(String[] args) throws CouponSystemException {
 
 
-        CompaniesDAO companyimpl = new CompaniesDBDAO();
+        CustomersDAO customersDAO = new CustomersDBDAO();
         Company company1 = new Company("eli","@1.com","12435435345@");
 
+        Customer customer = new Customer("Eli","Gertzman","eli@gmail.com","123445E");
 
-        ArrayList<Company> list =companyimpl.getAllCompanies();
 
-        for (Company company:list
-             ) {
-            System.out.println(company);
-        }
+        customer.setId(7);
+        customersDAO.updateCustomer(customer);
 
-        try {
-            System.out.println("chosen company" + companyimpl.getOneCompany(134));
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+
+
         //   System.out.println(company1);
 
 

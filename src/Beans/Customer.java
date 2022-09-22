@@ -11,8 +11,8 @@ public class Customer {
     private String password;
     private ArrayList<Coupon> coupons;
 
-    public Customer(int id, String firstName, String lastName, String email, String password) {
-        this.id = id;
+    public Customer( String firstName, String lastName, String email, String password) {
+
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -48,6 +48,12 @@ public class Customer {
     public String getFirstName() {
         return firstName;
     }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+
 
     @Override
     public String toString() {
