@@ -20,11 +20,12 @@ public class test {
         CustomersDAO customersDAO = new CustomersDBDAO();
         Company company1 = new Company("eli","@1.com","12435435345@");
 
-        Customer customer = new Customer("Eli","Gertzman","eli@gmail.com","123445E");
+        Customer customer = new Customer("Eli the first ","Gertzman","eli@gmail.com","123445E");
 
 
         customer.setId(7);
-        customersDAO.updateCustomer(customer);
+        System.out.println(customersDAO.getOneCustomer(1));
+
 
 
 

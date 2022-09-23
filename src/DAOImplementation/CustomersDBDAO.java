@@ -7,10 +7,7 @@ import DAO.CustomersDAO;
 import Exceptions.CouponSystemException;
 
 import java.net.ConnectException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 
 public class CustomersDBDAO implements CustomersDAO {
@@ -73,11 +70,7 @@ public class CustomersDBDAO implements CustomersDAO {
 
     }
 
-    //create table `customer`(`id` int NOT NULL PRIMARY KEY auto_increment,
-    // `FIRST_NAME` varchar(25),
-    //  `LAST_NAME` varchar(25),
-    // `email` varchar(50) UNIQUE NOT NULL,
-    // `password` varchar(60) NOT NULL );
+
 
     @Override
     public void updateCustomer(Customer customer) throws  CouponSystemException {
@@ -100,17 +93,83 @@ public class CustomersDBDAO implements CustomersDAO {
     }
 
     @Override
-    public void deleteCustomer(int customerId) {
+    public void deleteCustomer(int customerId) throws CouponSystemException {
+        String sql = "delete from customer where id  = " + customerId;
+        try(Connection con = ConnectionPool.getInstance().getConnection()) {
+
+            Statement stm = con.createStatement();
+            int rawCount =  stm.executeUpdate(sql);
+            if(rawCount ==0){
+                System.out.println("deleteFromCVC - no rows were effected ");
+            }
+
+        } catch (SQLException | CouponSystemException e) {
+            throw new CouponSystemException("delete exception");
+        }
+    }
+
+
+    //create table `customer`(`id` int NOT NULL PRIMARY KEY auto_increment,
+    // `FIRST_NAME` varchar(25),
+    //  `LAST_NAME` varchar(25),
+    // `email` varchar(50) UNIQUE NOT NULL,
+    // `password` varchar(60) NOT NULL );
+
+    @Override
+    public ArrayList<Customer> getAllCustomers() throws CouponSystemException {
+
+        String sql = "select * from customer";
+        ArrayList<Customer> customers  = new ArrayList<>();
+        try(Connection con = ConnectionPool.getInstance().getConnection();) {
+            Statement stm = con.createStatement();
+            stm.execute(sql);
+            ResultSet resultSet=stm.executeQuery(sql);
+            while (resultSet.next()){
+                Customer customer = new Customer();
+                customer.setId(resultSet.getInt(1));
+                customer.setFirstName(resultSet.getString(2));
+                customer.setLastName(resultSet.getString(3));
+                customer.setEmail(resultSet.getString(3));
+                customer.setPassword(resultSet.getString(4));
+                customers.add(customer);
+
+
+            }
+
+            resultSet.close();
+            stm.close();
+            return customers;
+
+        }catch (SQLException e) {
+            throw new CouponSystemException("delete exception");
+        }
+
 
     }
 
     @Override
-    public ArrayList<Customer> getAllCustomers() {
-        return null;
-    }
+    public Customer getOneCustomer(int customerId) throws CouponSystemException {
 
-    @Override
-    public Company getOneCustomer(int companyId) {
-        return null;
+        String sql = "select * from customer where id = "+ customerId;
+        try(Connection con = ConnectionPool.getInstance().getConnection();) {
+            Statement stm = con.createStatement();
+            stm.execute(sql);
+            ResultSet resultSet=stm.executeQuery(sql);
+            resultSet.next();
+            Customer customer = new Customer();
+            customer.setId(resultSet.getInt(1));
+            customer.setFirstName(resultSet.getString(2));
+            customer.setLastName(resultSet.getString(3));
+            customer.setEmail(resultSet.getString(4));
+            customer.setPassword(resultSet.getString(5));
+
+            resultSet.close();
+            stm.close();
+            return customer;
+
+        }catch (SQLException e) {
+            throw new CouponSystemException("get one customer");
+        }
+
     }
 }

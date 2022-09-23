@@ -21,10 +21,10 @@ public interface CustomersDAO {
 
     void updateCustomer(Customer customer) throws CouponSystemException;
 
-    void deleteCustomer(int customerId);
+    void deleteCustomer(int customerId) throws CouponSystemException;
 
-    ArrayList<Customer> getAllCustomers();
+    ArrayList<Customer> getAllCustomers() throws CouponSystemException;
 
-    Company getOneCustomer(int companyId);
+    Customer getOneCustomer(int customerId) throws CouponSystemException;
 
 }

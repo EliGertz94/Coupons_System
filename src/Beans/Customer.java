@@ -19,6 +19,9 @@ public class Customer {
         this.password = password;
     }
 
+    public Customer() {
+    }
+
     public int getId() {
         return id;
     }
@@ -53,7 +56,21 @@ public class Customer {
         this.id = id;
     }
 
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setCoupons(ArrayList<Coupon> coupons) {
+        this.coupons = coupons;
+    }
 
     @Override
     public String toString() {
