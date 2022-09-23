@@ -17,7 +17,7 @@ public interface CompaniesDAO {
 
     boolean isCompanyExists(String email,String password);
 
-    int addCompany(Company company) throws ConnectException;
+    int addCompany(Company company) throws ConnectException, CouponSystemException;
 
     void updateCompany(Company company) throws ConnectException;
 

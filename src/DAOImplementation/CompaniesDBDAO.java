@@ -40,7 +40,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
     }
 
     @Override
-    public int addCompany(Company company) throws ConnectException {
+    public int addCompany(Company company) throws CouponSystemException {
 
             String SQL = " insert into company(name,email,password) values(?,?,?)";
 
@@ -64,7 +64,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
                 return id;
 
             } catch (SQLException | CouponSystemException e) {
-                throw new ConnectException("add company error");
+                throw new CouponSystemException("add company error");
 
             }
 

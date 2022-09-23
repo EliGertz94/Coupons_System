@@ -1,12 +1,13 @@
 package DAO;
 
 import Beans.Coupon;
+import Exceptions.CouponSystemException;
 
 import java.util.ArrayList;
 
 public interface CouponsDAO {
 
-    void addCoupon(Coupon coupon);
+    int addCoupon(Coupon coupon) throws CouponSystemException;
     void updateCoupon(Coupon coupon);
     void deleteCoupon(int couponId);
     ArrayList<Coupon> getAllCoupons();

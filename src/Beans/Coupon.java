@@ -15,10 +15,25 @@ public class Coupon {
     private double price;
     private String image;
 
-    public Coupon(int id, int companyId, Category category) {
-        this.id = id;
+    public Coupon( int companyId, Category category) {
+
         this.companyId = companyId;
         this.category = category;
+    }
+
+    public Coupon(int companyId, Category category, String title, String description, LocalDateTime startDate, LocalDateTime endDate, int amount, double price, String image) {
+        this.companyId = companyId;
+        this.category = category;
+        this.title = title;
+        this.description = description;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.amount = amount;
+        this.price = price;
+        this.image = image;
+    }
+
+    public Coupon() {
     }
 
     public void setCompanyId(int companyId) {
@@ -96,6 +111,12 @@ public class Coupon {
     public String getImage() {
         return image;
     }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+
 
     @Override
     public String toString() {
