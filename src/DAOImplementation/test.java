@@ -43,10 +43,10 @@ public class test {
         coupon.setId(8);
        // couponsDAO.updateCoupon(coupon);
         ArrayList<Coupon> list = couponsDAO.getAllCoupons();
-
-    for(Coupon coupon1 : list ){
-        System.out.println(coupon1);
-    }
+        System.out.println(couponsDAO.getOneCoupon(11));
+//    for(Coupon coupon1 : list ){
+//        System.out.println(coupon1);
+//    }
 
 
 

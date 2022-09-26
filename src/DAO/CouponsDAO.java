@@ -11,7 +11,7 @@ public interface CouponsDAO {
     void updateCoupon(Coupon coupon) throws CouponSystemException;
     void deleteCoupon(int couponId) throws CouponSystemException;
     ArrayList<Coupon> getAllCoupons() throws CouponSystemException;
-    Coupon getOneCoupon(int couponId);
+    Coupon getOneCoupon(int couponId) throws CouponSystemException;
     void addCouponPurchase(int customerId , int couponId);
     void deleteCouponPurchase(int customerId , int couponId);
 

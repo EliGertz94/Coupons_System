@@ -1,6 +1,7 @@
 package DAOImplementation;
 
 import Beans.Category;
+import Beans.Company;
 import Beans.Coupon;
 import Beans.Customer;
 import ConnectionPoolRelated.ConnectionPool;
@@ -152,8 +153,43 @@ public class CouponsDBDAO implements CouponsDAO {
     }
 
     @Override
-    public Coupon getOneCoupon(int couponId) {
-        return null;
+    public Coupon getOneCoupon(int couponId) throws CouponSystemException {
+
+        String sql = "select * from coupons where id = "+ couponId;
+        try(Connection con = ConnectionPool.getInstance().getConnection();) {
+            Statement stm = con.createStatement();
+            stm.execute(sql);
+            ResultSet resultSet=stm.executeQuery(sql);
+            resultSet.next();
+
+                Coupon coupon = new Coupon();
+                coupon.setId(resultSet.getInt(1));
+                coupon.setCompanyId(resultSet.getInt(2));
+
+                for (Category category : Category.values()) {
+                    if(category.getCode() == resultSet.getInt(3)){
+                        coupon.setCategory(category);
+                    }
+                }
+                coupon.setTitle(resultSet.getString(4));
+                coupon.setDescription(resultSet.getString(5));
+                Timestamp startTimestamp = new Timestamp(resultSet.getDate(6).getTime());
+                coupon.setStartDate(startTimestamp.toLocalDateTime());
+                Timestamp endTimestamp = new Timestamp(resultSet.getDate(7).getTime());
+                coupon.setEndDate(endTimestamp.toLocalDateTime());
+
+                coupon.setAmount(resultSet.getInt(8));
+                coupon.setPrice(resultSet.getDouble(9));
+                coupon.setImage(resultSet.getString(10));
+
+            resultSet.close();
+            stm.close();
+            return coupon;
+
+        }catch (CouponSystemException | SQLException e) {
+            throw new CouponSystemException("delete exception");
+        }
+
     }
 
     @Override
