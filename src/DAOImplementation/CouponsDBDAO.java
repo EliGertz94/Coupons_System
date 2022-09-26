@@ -1,6 +1,8 @@
 package DAOImplementation;
 
+import Beans.Category;
 import Beans.Coupon;
+import Beans.Customer;
 import ConnectionPoolRelated.ConnectionPool;
 import DAO.CouponsDAO;
 import Exceptions.CouponSystemException;
@@ -57,18 +59,100 @@ public class CouponsDBDAO implements CouponsDAO {
     }
 
     @Override
-    public void updateCoupon(Coupon coupon) {
+    public void updateCoupon(Coupon coupon) throws CouponSystemException {
+        String sql = "UPDATE coupons SET CATEGORY_ID = ?," +
+                "TITLE = ?, " +
+                "DESCRIPTION = ?," +
+                " START_DATE =?, " +
+                "END_DATE =?, " +
+                "AMOUNT =?," +
+                " PRICE = ? " +
+                ",IMAGE = ?" +
 
+                " WHERE id = ?";
+        try(Connection con = ConnectionPool.getInstance().getConnection();
+            PreparedStatement ps = con.prepareStatement(sql);) {
+
+            // set the preparedstatement parameters
+            ps.setInt(1,coupon.getCategory().getCode());
+            ps.setString(2,coupon.getTitle());
+            ps.setString(3,coupon.getDescription());
+            ps.setDate(4,Date.valueOf(coupon.getStartDate().toLocalDate()));
+            ps.setDate(5,Date.valueOf(coupon.getEndDate().toLocalDate()));
+            ps.setInt(6,coupon.getAmount());
+            ps.setDouble(7,coupon.getPrice());
+            ps.setString(8,coupon.getImage());
+
+            ps.setInt(9,coupon.getId());
+            ps.executeUpdate();
+
+        } catch (SQLException | CouponSystemException e) {
+            throw new CouponSystemException("update error at Company");
+        }
     }
 
     @Override
-    public void deleteCoupon(int couponId) {
+    public void deleteCoupon(int couponId) throws CouponSystemException {
+        String sql = "delete from coupons where id  = " + couponId;
+        try(Connection con = ConnectionPool.getInstance().getConnection()) {
 
+            Statement stm = con.createStatement();
+            int rawCount =  stm.executeUpdate(sql);
+            if(rawCount ==0){
+                System.out.println("deleteFromCVC - no rows were effected ");
+            }
+
+        } catch (SQLException | CouponSystemException e) {
+            throw new CouponSystemException("delete exception");
+        }
     }
 
     @Override
-    public ArrayList<Coupon> getAllCoupons() {
-        return null;
+    public ArrayList<Coupon> getAllCoupons() throws CouponSystemException {
+
+        String sql = "select * from coupons";
+        ArrayList<Coupon> customers  = new ArrayList<>();
+        try(Connection con = ConnectionPool.getInstance().getConnection()) {
+            Statement stm = con.createStatement();
+            stm.execute(sql);
+            ResultSet resultSet=stm.executeQuery(sql);
+            while (resultSet.next()){
+                Coupon coupon = new Coupon();
+                coupon.setId(resultSet.getInt(1));
+                coupon.setCompanyId(resultSet.getInt(2));
+
+
+
+                for (Category category : Category.values()) {
+                   if(category.getCode() == resultSet.getInt(3)){
+                       coupon.setCategory(category);
+                   }
+                }
+//                coupon.setEmail(resultSet.getString(3));
+//                coupon.setPassword(resultSet.getString(4));
+//                customers.add(customer);
+
+//                ps.setInt(1,coupon.getCategory().getCode());
+//                ps.setString(2,coupon.getTitle());
+//                ps.setString(3,coupon.getDescription());
+//                ps.setDate(4,Date.valueOf(coupon.getStartDate().toLocalDate()));
+//                ps.setDate(5,Date.valueOf(coupon.getEndDate().toLocalDate()));
+//                ps.setInt(6,coupon.getAmount());
+//                ps.setDouble(7,coupon.getPrice());
+//                ps.setString(8,coupon.getImage());
+
+
+            }
+
+            resultSet.close();
+            stm.close();
+            return customers;
+
+        }catch (SQLException | CouponSystemException e) {
+            throw new CouponSystemException("delete exception");
+        }
+
+
     }
 
     @Override
