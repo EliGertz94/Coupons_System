@@ -42,8 +42,11 @@ public class test {
 //        coupon.setEndDate(LocalDateTime.of(2022, 11, 13, 15, 56));
         coupon.setId(8);
        // couponsDAO.updateCoupon(coupon);
-        couponsDAO.deleteCoupon(9);
+        ArrayList<Coupon> list = couponsDAO.getAllCoupons();
 
+    for(Coupon coupon1 : list ){
+        System.out.println(coupon1);
+    }
 
 
 

@@ -111,7 +111,7 @@ public class CouponsDBDAO implements CouponsDAO {
     public ArrayList<Coupon> getAllCoupons() throws CouponSystemException {
 
         String sql = "select * from coupons";
-        ArrayList<Coupon> customers  = new ArrayList<>();
+        ArrayList<Coupon> coupons  = new ArrayList<>();
         try(Connection con = ConnectionPool.getInstance().getConnection()) {
             Statement stm = con.createStatement();
             stm.execute(sql);
@@ -121,32 +121,28 @@ public class CouponsDBDAO implements CouponsDAO {
                 coupon.setId(resultSet.getInt(1));
                 coupon.setCompanyId(resultSet.getInt(2));
 
-
-
                 for (Category category : Category.values()) {
                    if(category.getCode() == resultSet.getInt(3)){
                        coupon.setCategory(category);
                    }
                 }
-//                coupon.setEmail(resultSet.getString(3));
-//                coupon.setPassword(resultSet.getString(4));
-//                customers.add(customer);
+                   coupon.setTitle(resultSet.getString(4));
+                coupon.setDescription(resultSet.getString(5));
+                Timestamp startTimestamp = new Timestamp(resultSet.getDate(6).getTime());
+                coupon.setStartDate(startTimestamp.toLocalDateTime());
+                Timestamp endTimestamp = new Timestamp(resultSet.getDate(7).getTime());
+                coupon.setEndDate(endTimestamp.toLocalDateTime());
 
-//                ps.setInt(1,coupon.getCategory().getCode());
-//                ps.setString(2,coupon.getTitle());
-//                ps.setString(3,coupon.getDescription());
-//                ps.setDate(4,Date.valueOf(coupon.getStartDate().toLocalDate()));
-//                ps.setDate(5,Date.valueOf(coupon.getEndDate().toLocalDate()));
-//                ps.setInt(6,coupon.getAmount());
-//                ps.setDouble(7,coupon.getPrice());
-//                ps.setString(8,coupon.getImage());
-
+                coupon.setAmount(resultSet.getInt(8));
+                coupon.setPrice(resultSet.getDouble(9));
+                coupon.setImage(resultSet.getString(10));
+                coupons.add(coupon);
 
             }
 
             resultSet.close();
             stm.close();
-            return customers;
+            return coupons;
 
         }catch (SQLException | CouponSystemException e) {
             throw new CouponSystemException("delete exception");
