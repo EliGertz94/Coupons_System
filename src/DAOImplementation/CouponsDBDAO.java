@@ -13,6 +13,34 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class CouponsDBDAO implements CouponsDAO {
+
+    public boolean doesCouponExists(int couponId) {
+
+        try {
+            Connection   connection = ConnectionPool.getInstance().getConnection();
+
+            PreparedStatement ps =
+                    connection.prepareStatement("SELECT id FROM coupons WHERE id = ?");
+            ps.setInt(1, couponId);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return true;
+            } else {
+                return false;
+            }
+
+        } catch (CouponSystemException e) {
+            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+
+    }
+
+
     @Override
     public int addCoupon(Coupon coupon) throws CouponSystemException {
 
@@ -193,7 +221,33 @@ public class CouponsDBDAO implements CouponsDAO {
     }
 
     @Override
-    public void addCouponPurchase(int customerId, int couponId) {
+    public void addCouponPurchase(int customerId, int couponId) throws CouponSystemException {
+
+        //(3,3);
+        String SQL = "insert into CUSTOMERS_VS_COUPONS values(?,?)";
+
+
+        try{
+
+            Connection con = ConnectionPool.getInstance().getConnection();
+            PreparedStatement pstmt = con.prepareStatement(SQL,PreparedStatement.RETURN_GENERATED_KEYS);
+            //(CUSTOMER_ID, COUPON_ID)
+            pstmt.setInt(1, customerId);
+            pstmt.setInt(2, couponId);
+            pstmt.executeUpdate();
+            ResultSet resultSet = pstmt.getGeneratedKeys();
+            resultSet.next();
+            // should I return connection every time or does it do it automatically
+            ConnectionPool.getInstance().restoreConnection(con);
+
+
+            // change coupon amount by  couponId
+
+        } catch (SQLException | CouponSystemException e) {
+            throw new CouponSystemException("addCouponPurchase  was added ");
+
+        }
+
 
     }
 

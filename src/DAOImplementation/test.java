@@ -23,7 +23,7 @@ public class test {
     public static void main(String[] args) throws CouponSystemException {
 
 
-        CouponsDAO couponsDAO = new CouponsDBDAO();
+        CouponsDBDAO couponsDAO = new CouponsDBDAO();
 
         String str = "2022-10-30 11:30:40";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -43,7 +43,9 @@ public class test {
         coupon.setId(8);
        // couponsDAO.updateCoupon(coupon);
         ArrayList<Coupon> list = couponsDAO.getAllCoupons();
-        System.out.println(couponsDAO.getOneCoupon(11));
+
+         couponsDAO.addCouponPurchase(3,3);
+      //  System.out.println(couponsDAO.getOneCoupon(11));
 //    for(Coupon coupon1 : list ){
 //        System.out.println(coupon1);
 //    }
