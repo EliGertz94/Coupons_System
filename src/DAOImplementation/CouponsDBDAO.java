@@ -223,7 +223,6 @@ public class CouponsDBDAO implements CouponsDAO {
     @Override
     public void addCouponPurchase(int customerId, int couponId) throws CouponSystemException {
 
-        //(3,3);
         String SQL = "insert into CUSTOMERS_VS_COUPONS values(?,?)";
 
 
@@ -231,17 +230,17 @@ public class CouponsDBDAO implements CouponsDAO {
 
             Connection con = ConnectionPool.getInstance().getConnection();
             PreparedStatement pstmt = con.prepareStatement(SQL,PreparedStatement.RETURN_GENERATED_KEYS);
-            //(CUSTOMER_ID, COUPON_ID)
             pstmt.setInt(1, customerId);
             pstmt.setInt(2, couponId);
             pstmt.executeUpdate();
             ResultSet resultSet = pstmt.getGeneratedKeys();
             resultSet.next();
             // should I return connection every time or does it do it automatically
+            Coupon coupon = getOneCoupon(couponId);
+            changeCouponAmount(couponId,coupon.getAmount()-1);
+
             ConnectionPool.getInstance().restoreConnection(con);
 
-
-            // change coupon amount by  couponId
 
         } catch (SQLException | CouponSystemException e) {
             throw new CouponSystemException("addCouponPurchase  was added ");
@@ -252,7 +251,38 @@ public class CouponsDBDAO implements CouponsDAO {
     }
 
     @Override
-    public void deleteCouponPurchase(int customerId, int couponId) {
+    public void deleteCouponPurchase(int customerId, int couponId) throws CouponSystemException {
+        String sql = "delete from CUSTOMERS_VS_COUPONS where CUSTOMER_ID  =? AND COUPON_ID =? ";
+        try(Connection con = ConnectionPool.getInstance().getConnection()) {
 
+            PreparedStatement pstmt = con.prepareStatement(sql,PreparedStatement.RETURN_GENERATED_KEYS);
+            pstmt.setInt(1, customerId);
+            pstmt.setInt(2, couponId);
+            pstmt.executeUpdate();
+            ResultSet resultSet = pstmt.getGeneratedKeys();
+            resultSet.next();
+            Coupon coupon = getOneCoupon(couponId);
+
+            changeCouponAmount(couponId,coupon.getAmount()+1);
+        } catch (SQLException | CouponSystemException e) {
+            throw new CouponSystemException("delete exception");
+        }
     }
+
+    public void changeCouponAmount(int couponId , int amountChange) throws CouponSystemException {
+
+            String sql = "UPDATE coupons SET AMOUNT =? WHERE id = ?";
+
+            try(Connection con = ConnectionPool.getInstance().getConnection();
+                PreparedStatement ps = con.prepareStatement(sql);) {
+                ps.setInt(1,amountChange);
+                ps.setInt(2,couponId);
+                ps.executeUpdate();
+
+            } catch (SQLException | CouponSystemException e) {
+                throw new CouponSystemException("update error at Company");
+            }
+    }
+
+
 }

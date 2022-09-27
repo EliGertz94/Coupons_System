@@ -44,7 +44,7 @@ public class test {
        // couponsDAO.updateCoupon(coupon);
         ArrayList<Coupon> list = couponsDAO.getAllCoupons();
 
-         couponsDAO.addCouponPurchase(3,3);
+         couponsDAO.deleteCouponPurchase(1,4);
       //  System.out.println(couponsDAO.getOneCoupon(11));
 //    for(Coupon coupon1 : list ){
 //        System.out.println(coupon1);
