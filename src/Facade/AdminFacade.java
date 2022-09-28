@@ -1,4 +1,11 @@
 package Facade;
 
-public class AdminFacade {
+import DAOImplementation.CompaniesDBDAO;
+
+public class AdminFacade extends  ClientFacade {
+
+
+    @Override
+    public boolean logIn(String email, String password) {
+    }
 }

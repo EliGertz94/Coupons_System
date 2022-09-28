@@ -20,7 +20,7 @@ import java.util.List;
 
 public class test {
 
-    public static void main(String[] args) throws CouponSystemException {
+    public static void main(String[] args) throws CouponSystemException, ConnectException {
 
 
         CouponsDBDAO couponsDAO = new CouponsDBDAO();
@@ -44,7 +44,10 @@ public class test {
        // couponsDAO.updateCoupon(coupon);
         ArrayList<Coupon> list = couponsDAO.getAllCoupons();
 
-         couponsDAO.deleteCouponPurchase(1,4);
+        CompaniesDAO companies  =  new CompaniesDBDAO();
+         companies.deleteCompany(1);
+
+     //    couponsDAO.deleteCouponPurchase(1,4);
       //  System.out.println(couponsDAO.getOneCoupon(11));
 //    for(Coupon coupon1 : list ){
 //        System.out.println(coupon1);
