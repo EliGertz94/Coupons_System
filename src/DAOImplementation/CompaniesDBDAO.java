@@ -72,21 +72,20 @@ public class CompaniesDBDAO implements CompaniesDAO {
     }
 
     @Override
-    public void updateCompany(Company company) throws ConnectException {
-        String sql = "UPDATE company SET name = ?, email = ?, password=? WHERE id = ?";
+    public void updateCompany(Company company) throws CouponSystemException {
+        String sql = "UPDATE company SET email = ?, password=? WHERE id = ?";
         try(Connection con = ConnectionPool.getInstance().getConnection();
             PreparedStatement ps = con.prepareStatement(sql);) {
 
             // set the preparedstatement parameters
-            ps.setString(1,company.getName());
-            ps.setString(2,company.getEmail());
-            ps.setString(3,company.getPassword());
-            ps.setInt(4,company.getId());
+            ps.setString(1,company.getEmail());
+            ps.setString(2,company.getPassword());
+            ps.setInt(3,company.getId());
 
 
             ps.executeUpdate();
         } catch (SQLException | CouponSystemException e) {
-           throw new ConnectException("update error at Company");
+           throw new CouponSystemException("update error at Company");
         }
     }
 
@@ -95,7 +94,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
     //delete from company where id  =1;
 
     @Override
-    public void deleteCompany(int companyId) throws ConnectException {
+    public void deleteCompany(int companyId) throws CouponSystemException {
 
         deleteFromCVC(companyId);
         deleteFromCCoupons(companyId);
@@ -105,15 +104,15 @@ public class CompaniesDBDAO implements CompaniesDAO {
             Statement stm = con.createStatement();
             int rawCount =  stm.executeUpdate(sql);
             if(rawCount ==0){
-                throw new ConnectException("deleteCompany - no rows were effected ");
+                throw new CouponSystemException("deleteCompany - no rows were effected ");
             }
 
         } catch (SQLException | CouponSystemException e) {
-            throw new ConnectException("delete exception");
+            throw new CouponSystemException("delete exception");
         }
     }
 
-    public void deleteFromCCoupons(int companyId) throws ConnectException{
+    public void deleteFromCCoupons(int companyId) throws CouponSystemException{
         String sql = "delete from coupons where COMPANY_ID  = " + companyId;
         try(Connection con = ConnectionPool.getInstance().getConnection()) {
 
@@ -124,22 +123,21 @@ public class CompaniesDBDAO implements CompaniesDAO {
             }
 
         } catch (SQLException | CouponSystemException e) {
-            throw new ConnectException("delete exception");
+            throw new CouponSystemException("delete exception");
         }
     }
 
-    public void deleteFromCVC(int companyId) throws ConnectException{
+    public void deleteFromCVC(int companyId) throws CouponSystemException{
         String sql = "delete from CUSTOMERS_VS_COUPONS where COUPON_ID  = " + companyId;
         try(Connection con = ConnectionPool.getInstance().getConnection()) {
 
             Statement stm = con.createStatement();
             int rawCount =  stm.executeUpdate(sql);
             if(rawCount ==0){
-                System.out.println("deleteFromCVC - no rows were effected ");
             }
 
         } catch (SQLException | CouponSystemException e) {
-            throw new ConnectException("delete exception");
+            throw new CouponSystemException("delete exception");
         }
     }
 
@@ -187,14 +185,14 @@ public class CompaniesDBDAO implements CompaniesDAO {
             return companies;
 
         }catch (SQLException e) {
-        throw new CouponSystemException("delete exception");
+        throw new CouponSystemException("getAllCompanies");
     }
 
 
     }
 
     @Override
-    public Company getOneCompany(int companyId) throws CouponSystemException, SQLException {
+    public Company getOneCompany(int companyId) throws CouponSystemException {
 
         String sql = "select * from company where id = "+ companyId;
         try(Connection con = ConnectionPool.getInstance().getConnection();) {
@@ -213,7 +211,63 @@ public class CompaniesDBDAO implements CompaniesDAO {
             return company;
 
         }catch (SQLException e) {
-            throw new CouponSystemException("delete exception");
+            throw new CouponSystemException("getOneCompany");
+        }
+
+
+    }
+
+
+    public boolean getCompanyByName(String companyName) throws CouponSystemException {
+
+        String sql = "Select  * from company where name =  '"+ companyName+"'";
+        try(Connection con = ConnectionPool.getInstance().getConnection();
+           ) {
+            Statement stm = con.createStatement();
+            stm.execute(sql);
+            ResultSet resultSet=stm.executeQuery(sql);
+            boolean result=  resultSet.next();
+
+            resultSet.close();
+            stm.close();
+            if (result) {
+                return true;
+            } else {
+                return false;
+            }
+
+
+
+
+
+        }catch (SQLException | CouponSystemException e) {
+            throw new CouponSystemException("getCompanyByName");
+        }
+
+
+    }
+
+    public boolean getCompanyByEmail(String companyEmail) throws CouponSystemException {
+
+        String sql = "select * from company where email = '"+ companyEmail.replaceAll(" ", "")+"'";
+        try(Connection con = ConnectionPool.getInstance().getConnection();
+            Statement stm = con.createStatement();) {
+            stm.execute(sql);
+            ResultSet resultSet=stm.executeQuery(sql);
+
+            boolean result=  resultSet.next();
+
+            resultSet.close();
+            stm.close();
+            if (result) {
+                return true;
+            } else {
+                return false;
+            }
+
+
+        }catch (SQLException | CouponSystemException e) {
+            throw new CouponSystemException("getCompanyByEmail");
         }
 
 

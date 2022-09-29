@@ -19,9 +19,9 @@ public interface CompaniesDAO {
 
     int addCompany(Company company) throws ConnectException, CouponSystemException;
 
-    void updateCompany(Company company) throws ConnectException;
+    void updateCompany(Company company) throws ConnectException, CouponSystemException;
 
-    void deleteCompany(int companyId) throws ConnectException;
+    void deleteCompany(int companyId) throws ConnectException, CouponSystemException;
 
     ArrayList<Company> getAllCompanies() throws CouponSystemException;
 
