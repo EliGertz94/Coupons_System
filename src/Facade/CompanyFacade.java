@@ -101,9 +101,9 @@ public class CompanyFacade extends ClientFacade{
 
     }
 
-    public ArrayList<Coupon> getAllCompanyCoupons() throws CouponSystemException {
+    public ArrayList<Coupon> getAllCompanyCoupons(Category category) throws CouponSystemException {
 
-        String sql = "select * from coupons WHERE COMPANY_ID = " + this.companyId;
+        String sql = "select * from coupons WHERE COMPANY_ID = " + this.companyId+" AND CATEGORY_ID = " +category.getCode();
         ArrayList<Coupon> coupons  = new ArrayList<>();
         try(Connection con = ConnectionPool.getInstance().getConnection()) {
             Statement stm = con.createStatement();
@@ -114,9 +114,9 @@ public class CompanyFacade extends ClientFacade{
                 coupon.setId(resultSet.getInt(1));
                 coupon.setCompanyId(resultSet.getInt(2));
 
-                for (Category category : Category.values()) {
-                    if(category.getCode() == resultSet.getInt(3)){
-                        coupon.setCategory(category);
+                for (Category category1 : Category.values()) {
+                    if(category1.getCode() == resultSet.getInt(3)){
+                        coupon.setCategory(category1);
                     }
                 }
                 coupon.setTitle(resultSet.getString(4));
