@@ -38,13 +38,18 @@ public class test {
         coupon.setStartDate(LocalDateTime.now());
         coupon.setEndDate(dateTime);
         coupon.setCompanyId(786876);
-        coupon.setTitle("running coursehjgjh hgjh");
+        coupon.setTitle("eating contest");
         //
 //        coupon.setEndDate(LocalDateTime.of(2022, 11, 13, 15, 56));
 
 //
-        CompanyFacade companyFacade = new CompanyFacade();
+        CompanyFacade companyFacade = new CompanyFacade(6);
         companyFacade.addCoupon(coupon);
+       ArrayList<Coupon> coupons =  companyFacade.getAllCompanyCoupons();
+
+       for(Coupon coupon1 : coupons){
+           System.out.println(coupon1);
+       }
         //System.out.println(couponsDAO.uniqueTitleByCompany(3,coupon.getTitle()));
 //        CompaniesDBDAO companiesDBDAO = new CompaniesDBDAO();
 //        System.out.println(companiesDBDAO.checkCompany(3));

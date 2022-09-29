@@ -6,6 +6,7 @@ import DAOImplementation.CompaniesDBDAO;
 import Exceptions.CouponSystemException;
 
 import java.net.ConnectException;
+import java.nio.charset.CoderMalfunctionError;
 import java.sql.SQLException;
 
 public class test {
@@ -19,8 +20,8 @@ public class test {
         Company company = new Company("amm","maam@gmail.com","word");
         Customer customer = new Customer("Avi","gertz",
                 "Avil@gmail.com","123");
-        customer.setId(2);
-        adminFacade.deleteCustomer(customer.getId());
+       // customer.setId(2);
+        adminFacade.addCompany(company);
 
 
 
