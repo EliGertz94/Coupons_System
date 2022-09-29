@@ -14,10 +14,6 @@ public class CompanyFacade extends ClientFacade{
     private int companyId;
 
 
-    public CompanyFacade(int companyId) {
-        this.companyId = companyId;
-    }
-
     // יש לבדוק את פרטי ה-Login (אימייל וסיסמה) מול מסד הנתונים.
     @Override
     public boolean logIn(String email, String password) {
@@ -25,6 +21,8 @@ public class CompanyFacade extends ClientFacade{
            return true;
        }
        return false;
+
+       /// go to db and check and then give the id value by result
     }
 
     //הוספת קופון חדש.
