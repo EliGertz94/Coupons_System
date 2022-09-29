@@ -9,6 +9,7 @@ import DAO.CompaniesDAO;
 import DAO.CouponsDAO;
 import DAO.CustomersDAO;
 import Exceptions.CouponSystemException;
+import Facade.CompanyFacade;
 
 import java.net.ConnectException;
 import java.sql.SQLException;
@@ -36,16 +37,17 @@ public class test {
         coupon.setCategory(Category.Food);
         coupon.setStartDate(LocalDateTime.now());
         coupon.setEndDate(dateTime);
-        coupon.setCompanyId(120);
-        coupon.setTitle("eating");
+        coupon.setCompanyId(786876);
+        coupon.setTitle("running coursehjgjh hgjh");
         //
 //        coupon.setEndDate(LocalDateTime.of(2022, 11, 13, 15, 56));
-        coupon.setId(8);
-       // couponsDAO.updateCoupon(coupon);
-        ArrayList<Coupon> list = couponsDAO.getAllCoupons();
 
-        CompaniesDAO companies  =  new CompaniesDBDAO();
-         companies.deleteCompany(1);
+//
+        CompanyFacade companyFacade = new CompanyFacade();
+        companyFacade.addCoupon(coupon);
+        //System.out.println(couponsDAO.uniqueTitleByCompany(3,coupon.getTitle()));
+//        CompaniesDBDAO companiesDBDAO = new CompaniesDBDAO();
+//        System.out.println(companiesDBDAO.checkCompany(3));
 
      //    couponsDAO.deleteCouponPurchase(1,4);
       //  System.out.println(couponsDAO.getOneCoupon(11));

@@ -217,6 +217,18 @@ public class CompaniesDBDAO implements CompaniesDAO {
 
     }
 
+    public boolean checkCompany(int companyId) throws CouponSystemException {
+        String sql = "select * from company where id = "+ companyId;
+        try(Connection con = ConnectionPool.getInstance().getConnection();) {
+            Statement stm = con.createStatement();
+            stm.execute(sql);
+            ResultSet resultSet=stm.executeQuery(sql);
+            return resultSet.next();
+        }catch (SQLException e) {
+            throw new CouponSystemException("getOneCompany");
+        }
+    }
+
 
     public boolean getCompanyByName(String companyName) throws CouponSystemException {
 

@@ -35,7 +35,6 @@ public class ConnectionPool {
             this.connections.add(DriverManager.getConnection(url, user, password));
         }
         isActive = true;
-        System.out.println("connection pool up");
     }
 
     public static ConnectionPool getInstance() {
@@ -83,7 +82,6 @@ public class ConnectionPool {
                 throw new CouponSystemException("closeAllConnections failure", e);
             }
         }
-        System.out.println("connection pool down");
     }
 
 

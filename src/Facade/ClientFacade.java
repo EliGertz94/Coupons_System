@@ -10,8 +10,8 @@ import DAOImplementation.CustomersDBDAO;
 public abstract class ClientFacade {
 
      public   CompaniesDBDAO companiesDAO = new CompaniesDBDAO();
-     public    CouponsDAO couponsDAO = new CouponsDBDAO();
-     public    CustomersDAO customersDAO=  new CustomersDBDAO();
+     public    CouponsDBDAO couponsDAO = new CouponsDBDAO();
+     public    CustomersDBDAO customersDAO=  new CustomersDBDAO();
 
 
     public abstract boolean logIn(String email, String password);

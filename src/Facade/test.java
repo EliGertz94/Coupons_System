@@ -1,6 +1,7 @@
 package Facade;
 
 import Beans.Company;
+import Beans.Customer;
 import DAOImplementation.CompaniesDBDAO;
 import Exceptions.CouponSystemException;
 
@@ -9,19 +10,19 @@ import java.sql.SQLException;
 
 public class test {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws CouponSystemException {
 
 
-        try{
+
         AdminFacade adminFacade = new AdminFacade();
         CompaniesDBDAO companiesDBDAO = new CompaniesDBDAO();
         Company company = new Company("amm","maam@gmail.com","word");
-        company.setId(companiesDBDAO.getOneCompany(4).getId());
-            System.out.println(adminFacade.getAllCompanies());
+        Customer customer = new Customer("Avi","gertz",
+                "Avil@gmail.com","123");
+        customer.setId(2);
+        adminFacade.deleteCustomer(customer.getId());
 
-        } catch (CouponSystemException e) {
-            throw new RuntimeException(e);
-        }
+
 
 
     }

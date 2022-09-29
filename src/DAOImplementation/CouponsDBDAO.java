@@ -285,4 +285,20 @@ public class CouponsDBDAO implements CouponsDAO {
     }
 
 
+    public boolean uniqueTitleByCompany(int companyId,String title ) throws CouponSystemException {
+        String sql = "select * from coupons where  COMPANY_ID = "+ companyId +" AND TITLE = '" + title+"'";
+        try(Connection con = ConnectionPool.getInstance().getConnection();) {
+            Statement stm = con.createStatement();
+            stm.execute(sql);
+            ResultSet resultSet=stm.executeQuery(sql);
+            boolean result = resultSet.next();
+            resultSet.close();
+            stm.close();
+            return result;
+
+        }catch (CouponSystemException | SQLException e) {
+            throw new CouponSystemException("delete exception");
+        }
+    }
+
 }

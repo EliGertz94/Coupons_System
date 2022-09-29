@@ -46,7 +46,7 @@ public class CustomersDBDAO implements CustomersDAO {
         try{
 
             Connection con = ConnectionPool.getInstance().getConnection();
-            System.out.println(con);
+
             PreparedStatement pstmt = con.prepareStatement(SQL,PreparedStatement.RETURN_GENERATED_KEYS);
 
             pstmt.setString(1, customer.getFirstName());
@@ -57,7 +57,6 @@ public class CustomersDBDAO implements CustomersDAO {
             ResultSet resultSet = pstmt.getGeneratedKeys();
             resultSet.next();
             int id= resultSet.getInt(1);
-            System.out.println("company with id number "+ id +  " was created");
 
             ConnectionPool.getInstance().restoreConnection(con);
             return id;
@@ -100,7 +99,9 @@ public class CustomersDBDAO implements CustomersDAO {
             Statement stm = con.createStatement();
             int rawCount =  stm.executeUpdate(sql);
             if(rawCount ==0){
-                System.out.println("deleteFromCVC - no rows were effected ");
+                System.out.println("no customer with such id ");
+            }else{
+                System.out.println(customerId+ " was deleted");
             }
 
         } catch (SQLException | CouponSystemException e) {
@@ -170,6 +171,32 @@ public class CustomersDBDAO implements CustomersDAO {
         }catch (SQLException e) {
             throw new CouponSystemException("get one customer");
         }
+
+    }
+
+    public boolean getCustomerByEmail(String companyEmail) throws CouponSystemException {
+
+        String sql = "select * from customer where email = '"+ companyEmail.replaceAll(" ", "")+"'";
+        try(Connection con = ConnectionPool.getInstance().getConnection();
+            Statement stm = con.createStatement();) {
+            stm.execute(sql);
+            ResultSet resultSet=stm.executeQuery(sql);
+
+            boolean result=  resultSet.next();
+
+            resultSet.close();
+            stm.close();
+            if (result) {
+                return true;
+            } else {
+                return false;
+            }
+
+
+        }catch (SQLException | CouponSystemException e) {
+            throw new CouponSystemException("getCompanyByEmail");
+        }
+
 
     }
 }
