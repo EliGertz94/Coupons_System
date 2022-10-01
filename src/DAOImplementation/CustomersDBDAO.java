@@ -11,34 +11,40 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class CustomersDBDAO implements CustomersDAO {
+
+                      //  connection.prepareStatement("SELECT id FROM customer WHERE password = ? AND email = ?");
+
+
     @Override
-    public boolean isCustomerExists(String email, String password) {
+    public Customer isCustomerExists(String email, String password) {
 
-            try {
-                Connection   connection = ConnectionPool.getInstance().getConnection();
+        String sql = "select * from customer where email = '" +
+                email + "'" + " AND password = '" + password + "'";
+        try (Connection con = ConnectionPool.getInstance().getConnection();) {
+            Statement stm = con.createStatement();
+            stm.execute(sql);
+            ResultSet resultSet = stm.executeQuery(sql);
+            Customer customer = new Customer();
+            if(resultSet.next()) {
+                customer.setId(resultSet.getInt(1));
+                customer.setFirstName(resultSet.getString(2));
+                customer.setLastName(resultSet.getString(3));
 
-                PreparedStatement ps =
-                        connection.prepareStatement("SELECT id FROM customer WHERE password = ? AND email = ?");
-                ps.setString (1, password);
-                ps.setString (2, email);
-                ResultSet rs = ps.executeQuery();
-
-                if (rs.next()) {
-                    return true;
-                } else {
-                    return false;
-                }
-
-            } catch (CouponSystemException e) {
-                throw new RuntimeException(e);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
+                customer.setEmail(resultSet.getString(4));
+                customer.setPassword(resultSet.getString(5));
+                resultSet.close();
+                stm.close();
             }
+            return customer;
 
-
+        } catch (CouponSystemException e) {
+            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    @Override
+        @Override
     public int addCustomer(Customer customer) throws CouponSystemException {
 
         String SQL = " insert into customer(FIRST_NAME,LAST_NAME,email,password) values(?,?,?,?)";

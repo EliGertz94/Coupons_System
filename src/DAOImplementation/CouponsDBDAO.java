@@ -14,6 +14,21 @@ import java.util.ArrayList;
 
 public class CouponsDBDAO implements CouponsDAO {
 
+   // ConnectionPool   connectionPool;
+
+//    public CouponsDBDAO(ConnectionPool connectionPool) {
+//        this.connectionPool = connectionPool;
+//    }
+
+//    {
+//        try {
+//            connectionPool.getInstance().getConnection();
+//        } catch (CouponSystemException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+
+
     @Override
     public boolean doesCouponExists(int couponId) {
 
@@ -25,8 +40,8 @@ public class CouponsDBDAO implements CouponsDAO {
             ps.setInt(1, couponId);
 
             ResultSet rs = ps.executeQuery();
-
             ConnectionPool.getInstance().restoreConnection(connection);
+
             if (rs.next()) {
                 return true;
             } else {

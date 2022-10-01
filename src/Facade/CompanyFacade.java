@@ -31,6 +31,7 @@ public class CompanyFacade extends ClientFacade{
     //בעל כותרת זהה לקופון של חברה אחרת.
 
 
+
     public void addCoupon(Coupon coupon) throws CouponSystemException {
         coupon.setCompanyId(this.companyId);
 
@@ -144,4 +145,49 @@ public class CompanyFacade extends ClientFacade{
     }
 
 
+    public ArrayList<Coupon> getAllCompanyCoupons(double maxPrice) throws CouponSystemException {
+
+        String sql = "select * from coupons WHERE COMPANY_ID = " + this.companyId+" AND AMOUNT > = " +maxPrice;
+        ArrayList<Coupon> coupons  = new ArrayList<>();
+        try(Connection con = ConnectionPool.getInstance().getConnection()) {
+            Statement stm = con.createStatement();
+            stm.execute(sql);
+            ResultSet resultSet=stm.executeQuery(sql);
+            while (resultSet.next()){
+                Coupon coupon = new Coupon();
+                coupon.setId(resultSet.getInt(1));
+                coupon.setCompanyId(resultSet.getInt(2));
+
+                for (Category category1 : Category.values()) {
+                    if(category1.getCode() == resultSet.getInt(3)){
+                        coupon.setCategory(category1);
+                    }
+                }
+                coupon.setTitle(resultSet.getString(4));
+                coupon.setDescription(resultSet.getString(5));
+                Timestamp startTimestamp = new Timestamp(resultSet.getDate(6).getTime());
+                coupon.setStartDate(startTimestamp.toLocalDateTime());
+                Timestamp endTimestamp = new Timestamp(resultSet.getDate(7).getTime());
+                coupon.setEndDate(endTimestamp.toLocalDateTime());
+
+                coupon.setAmount(resultSet.getInt(8));
+                coupon.setPrice(resultSet.getDouble(9));
+                coupon.setImage(resultSet.getString(10));
+                coupons.add(coupon);
+
+            }
+
+            resultSet.close();
+            stm.close();
+            return coupons;
+
+        }catch (SQLException | CouponSystemException e) {
+            throw new CouponSystemException("max price");
+        }
+
+
+    }
+
+//    public Company getCompanyDetails(){
+//    }
 }

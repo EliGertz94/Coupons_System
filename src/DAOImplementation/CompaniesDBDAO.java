@@ -21,13 +21,13 @@ public class CompaniesDBDAO implements CompaniesDAO {
             Statement stm = con.createStatement();
             stm.execute(sql);
             ResultSet resultSet = stm.executeQuery(sql);
-            resultSet.next();
             Company company = new Company();
-            company.setId(resultSet.getInt(1));
-            company.setName(resultSet.getString(2));
-            company.setEmail(resultSet.getString(3));
-            company.setPassword(resultSet.getString(4));
-
+           if( resultSet.next()) {
+               company.setId(resultSet.getInt(1));
+               company.setName(resultSet.getString(2));
+               company.setEmail(resultSet.getString(3));
+               company.setPassword(resultSet.getString(4));
+           }
             resultSet.close();
             stm.close();
             return company;

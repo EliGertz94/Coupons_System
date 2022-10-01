@@ -1,5 +1,6 @@
 package Facade;
 
+import ConnectionPoolRelated.ConnectionPool;
 import DAO.CompaniesDAO;
 import DAO.CouponsDAO;
 import DAO.CustomersDAO;
@@ -8,6 +9,8 @@ import DAOImplementation.CouponsDBDAO;
 import DAOImplementation.CustomersDBDAO;
 
 public abstract class ClientFacade {
+
+    ConnectionPool connectionPool = ConnectionPool.getInstance();
 
     protected    CompaniesDAO companiesDAO = new CompaniesDBDAO();
     protected    CouponsDAO couponsDAO = new CouponsDBDAO();

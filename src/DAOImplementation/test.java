@@ -23,7 +23,7 @@ public class test {
 
     public static void main(String[] args) throws CouponSystemException, ConnectException {
 
-
+        ConnectionPool connectionPool= ConnectionPool.getInstance();
         CouponsDBDAO couponsDAO = new CouponsDBDAO();
 
         String str = "2022-10-30 11:30:40";
@@ -41,23 +41,26 @@ public class test {
         coupon.setTitle("eating contest");
         //
 //        coupon.setEndDate(LocalDateTime.of(2022, 11, 13, 15, 56));
+        System.out.println(couponsDAO.doesCouponExists(4));
 
-//
         CompanyFacade companyFacade = new CompanyFacade();
-        CompanyFacade companyFacade1 = new CompanyFacade();
-        Company company = companyFacade1.logIn("mmmm@gmail.com","alla199");
-        System.out.println(company);
-        for (Coupon coupon1:companyFacade1.getAllCompanyCoupons())
-        {
-            System.out.println(coupon1);
-        }
-
-
-//        companyFacade.addCoupon(coupon);
-//       ArrayList<Coupon> coupons =  companyFacade.getAllCompanyCoupons();
+        companyFacade.logIn("email1@gmail.com","password");
+        System.out.println(companyFacade.getAllCompanyCoupons(Category.Food));
+//        CompanyFacade companyFacade = new CompanyFacade();
+//        CompanyFacade companyFacade1 = new CompanyFacade();
+//        Company company = companyFacade1.logIn("mmmm@gmail.com","alla199");
+//        System.out.println(company);
+//        for (Coupon coupon1:companyFacade1.getAllCompanyCoupons())
+//        {
+//            System.out.println(coupon1);
+//        }
 //
-//       for(Coupon coupon1 : coupons){
-//           System.out.println(coupon1);
+//
+////        companyFacade.addCoupon(coupon);
+////       ArrayList<Coupon> coupons =  companyFacade.getAllCompanyCoupons();
+////
+////       for(Coupon coupon1 : coupons){
+////           System.out.println(coupon1);
 //       }
 //        //System.out.println(couponsDAO.uniqueTitleByCompany(3,coupon.getTitle()));
 //        CompaniesDBDAO companiesDBDAO = new CompaniesDBDAO();
