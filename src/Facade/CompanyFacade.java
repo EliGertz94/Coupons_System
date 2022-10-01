@@ -15,14 +15,15 @@ public class CompanyFacade extends ClientFacade{
 
 
     // יש לבדוק את פרטי ה-Login (אימייל וסיסמה) מול מסד הנתונים.
-    @Override
-    public boolean logIn(String email, String password) {
-       if(companiesDAO.isCompanyExists(email,password)){
-           return true;
-       }
-       return false;
+
+    public Company logIn(String email, String password) {
+
+      Company company=  companiesDAO.isCompanyExists(email,password);
+      this.companyId=company.getId();
+        return company;
 
        /// go to db and check and then give the id value by result
+        //instantiat the
     }
 
     //הוספת קופון חדש.

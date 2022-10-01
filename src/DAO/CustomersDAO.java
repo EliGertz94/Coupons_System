@@ -27,4 +27,6 @@ public interface CustomersDAO {
 
     Customer getOneCustomer(int customerId) throws CouponSystemException;
 
+    boolean getCustomerByEmail(String companyEmail) throws CouponSystemException;
+
 }

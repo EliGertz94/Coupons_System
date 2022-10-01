@@ -15,16 +15,22 @@ public interface CompaniesDAO {
      *
      * */
 
-    boolean isCompanyExists(String email,String password);
+    Company isCompanyExists(String email,String password);
 
-    int addCompany(Company company) throws ConnectException, CouponSystemException;
+    int addCompany(Company company) throws  CouponSystemException;
 
-    void updateCompany(Company company) throws ConnectException, CouponSystemException;
+    void updateCompany(Company company) throws  CouponSystemException;
 
-    void deleteCompany(int companyId) throws ConnectException, CouponSystemException;
+    void deleteCompany(int companyId) throws  CouponSystemException;
+
+    void deleteFromCoupons(int companyId) throws CouponSystemException;
+    void deleteFromCVC(int companyId) throws CouponSystemException;
+    boolean getCompanyByName(String companyName) throws CouponSystemException;
 
     ArrayList<Company> getAllCompanies() throws CouponSystemException;
 
-    Company getOneCompany(int companyId) throws CouponSystemException, SQLException;
+    Company getOneCompany(int companyId) throws CouponSystemException;
+
+    boolean getCompanyByEmail(String companyEmail) throws CouponSystemException;
 
 }

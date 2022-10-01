@@ -9,11 +9,11 @@ import DAOImplementation.CustomersDBDAO;
 
 public abstract class ClientFacade {
 
-    protected    CompaniesDBDAO companiesDAO = new CompaniesDBDAO();
-    protected    CouponsDBDAO couponsDAO = new CouponsDBDAO();
-    protected    CustomersDBDAO customersDAO=  new CustomersDBDAO();
+    protected    CompaniesDAO companiesDAO = new CompaniesDBDAO();
+    protected    CouponsDAO couponsDAO = new CouponsDBDAO();
+    protected    CustomersDAO customersDAO=  new CustomersDBDAO();
 
     /// initiat with interface and put everything on interface
 
-    public abstract boolean logIn(String email, String password);
+    //public abstract boolean logIn(String email, String password);
 }

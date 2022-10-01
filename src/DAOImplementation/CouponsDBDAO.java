@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 public class CouponsDBDAO implements CouponsDAO {
 
+    @Override
     public boolean doesCouponExists(int couponId) {
 
         try {
@@ -25,6 +26,7 @@ public class CouponsDBDAO implements CouponsDAO {
 
             ResultSet rs = ps.executeQuery();
 
+            ConnectionPool.getInstance().restoreConnection(connection);
             if (rs.next()) {
                 return true;
             } else {
@@ -97,7 +99,6 @@ public class CouponsDBDAO implements CouponsDAO {
                 "AMOUNT =?," +
                 " PRICE = ? " +
                 ",IMAGE = ?" +
-
                 " WHERE id = ?";
         try(Connection con = ConnectionPool.getInstance().getConnection();
             PreparedStatement ps = con.prepareStatement(sql);) {
@@ -269,22 +270,23 @@ public class CouponsDBDAO implements CouponsDAO {
         }
     }
 
-    public void changeCouponAmount(int couponId , int amountChange) throws CouponSystemException {
+    @Override
+        public void changeCouponAmount(int couponId , int amountChange) throws CouponSystemException {
+                String sql = "UPDATE coupons SET AMOUNT =? WHERE id = ?";
 
-            String sql = "UPDATE coupons SET AMOUNT =? WHERE id = ?";
+                try(Connection con = ConnectionPool.getInstance().getConnection();
+                    PreparedStatement ps = con.prepareStatement(sql);) {
+                    ps.setInt(1,amountChange);
+                    ps.setInt(2,couponId);
+                    ps.executeUpdate();
 
-            try(Connection con = ConnectionPool.getInstance().getConnection();
-                PreparedStatement ps = con.prepareStatement(sql);) {
-                ps.setInt(1,amountChange);
-                ps.setInt(2,couponId);
-                ps.executeUpdate();
-
-            } catch (SQLException | CouponSystemException e) {
-                throw new CouponSystemException("update error at Company");
-            }
-    }
+                } catch (SQLException | CouponSystemException e) {
+                    throw new CouponSystemException("update error at Company");
+                }
+        }
 
 
+    @Override
     public boolean uniqueTitleByCompany(int companyId,String title ) throws CouponSystemException {
         String sql = "select * from coupons where  COMPANY_ID = "+ companyId +" AND TITLE = '" + title+"'";
         try(Connection con = ConnectionPool.getInstance().getConnection();) {

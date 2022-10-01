@@ -174,6 +174,7 @@ public class CustomersDBDAO implements CustomersDAO {
 
     }
 
+    @Override
     public boolean getCustomerByEmail(String companyEmail) throws CouponSystemException {
 
         String sql = "select * from customer where email = '"+ companyEmail.replaceAll(" ", "")+"'";

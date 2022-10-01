@@ -9,11 +9,11 @@ import DAOImplementation.CompaniesDBDAO;
 import Exceptions.CouponSystemException;
 
 import java.net.ConnectException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class AdminFacade extends  ClientFacade {
 
-    @Override
     public boolean logIn(String email, String password) {
        if(email.equals("admin@admin.com") && password.equals("admin")){
            return true;
@@ -32,7 +32,7 @@ public class AdminFacade extends  ClientFacade {
     }
 
 
-    public void updateCompany(Company company) throws CouponSystemException {
+    public void updateCompany(Company company) throws CouponSystemException, SQLException {
 
         if(company.getEmail().equals(companiesDAO.getOneCompany(company.getId()).getEmail()))
         {
