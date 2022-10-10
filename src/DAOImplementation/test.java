@@ -10,6 +10,8 @@ import DAO.CouponsDAO;
 import DAO.CustomersDAO;
 import Exceptions.CouponSystemException;
 import Facade.CompanyFacade;
+import Facade.CustomerFacade;
+import jdk.swing.interop.SwingInterOpUtils;
 
 import java.net.ConnectException;
 import java.sql.SQLException;
@@ -36,16 +38,21 @@ public class test {
         coupon.setImage("eatingman.png");
         coupon.setCategory(Category.Food);
         coupon.setStartDate(LocalDateTime.now());
+        coupon.setPrice(120);
         coupon.setEndDate(dateTime);
         coupon.setCompanyId(786876);
-        coupon.setTitle("eating contest");
+        coupon.setTitle("foodies ");
         //
 //        coupon.setEndDate(LocalDateTime.of(2022, 11, 13, 15, 56));
-        System.out.println(couponsDAO.doesCouponExists(4));
-
+      //  System.out.println(couponsDAO.doesCouponExists(4));
+        CouponsDBDAO couponsDAO1 = new CouponsDBDAO();
         CompanyFacade companyFacade = new CompanyFacade();
-        companyFacade.logIn("email1@gmail.com","password");
-        System.out.println(companyFacade.getAllCompanyCoupons(Category.Food));
+        companyFacade.logIn("maam@gmail.com","word");
+        companyFacade.addCoupon(coupon);
+        CustomerFacade customerFacade = new CustomerFacade();
+        customerFacade.logIn("email1@gmail.com","password");
+        customerFacade.purchaseCoupon(14);
+        System.out.println(companyFacade.getAllCompanyCoupons(2));
 //        CompanyFacade companyFacade = new CompanyFacade();
 //        CompanyFacade companyFacade1 = new CompanyFacade();
 //        Company company = companyFacade1.logIn("mmmm@gmail.com","alla199");

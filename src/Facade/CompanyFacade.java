@@ -146,8 +146,7 @@ public class CompanyFacade extends ClientFacade{
 
 
     public ArrayList<Coupon> getAllCompanyCoupons(double maxPrice) throws CouponSystemException {
-
-        String sql = "select * from coupons WHERE COMPANY_ID = " + this.companyId+" AND AMOUNT > = " +maxPrice;
+        String sql = "select * from coupons WHERE COMPANY_ID = " + this.companyId+" AND PRICE <= " +maxPrice;
         ArrayList<Coupon> coupons  = new ArrayList<>();
         try(Connection con = ConnectionPool.getInstance().getConnection()) {
             Statement stm = con.createStatement();

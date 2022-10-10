@@ -25,8 +25,11 @@ public class test {
 //        adminFacade.addCompany(company);
 
         CustomerFacade customerFacade = new CustomerFacade();
-        Customer customer=   customerFacade.logIn("email1@gmail.com","password");
-        System.out.println(customer);
+        customerFacade.logIn("email1@gmail.com","password");
+        customerFacade.purchaseCoupon(10);
+        //System.out.println(customer);
+
+        System.out.println(customerFacade.getCustomerDetails()+" get customer details");
         try {
            for(Coupon coupon:customerFacade.getCustomerCoupons()) {
                System.out.println(coupon);

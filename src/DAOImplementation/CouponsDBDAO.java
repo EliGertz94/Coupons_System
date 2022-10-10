@@ -62,7 +62,7 @@ public class CouponsDBDAO implements CouponsDAO {
     public int addCoupon(Coupon coupon) throws CouponSystemException {
 
 
-
+        int id=0;
 
         String SQL = " insert into coupons(\n" +
                 "                COMPANY_ID\n" +
@@ -91,8 +91,8 @@ public class CouponsDBDAO implements CouponsDAO {
             pstmt.executeUpdate();
             ResultSet resultSet = pstmt.getGeneratedKeys();
             resultSet.next();
-            int id= resultSet.getInt(1);
-            System.out.println("company with id number "+ id +  " was created");
+                 id = resultSet.getInt(1);
+                System.out.println("company with id number " + id + " was created");
 
             ConnectionPool.getInstance().restoreConnection(con);
          return id;
@@ -237,7 +237,7 @@ public class CouponsDBDAO implements CouponsDAO {
     }
 
     @Override
-    public void addCouponPurchase(int customerId, int couponId) throws CouponSystemException {
+    public synchronized void addCouponPurchase(int customerId, int couponId) throws CouponSystemException {
 
         String SQL = "insert into CUSTOMERS_VS_COUPONS values(?,?)";
 
@@ -250,7 +250,7 @@ public class CouponsDBDAO implements CouponsDAO {
             pstmt.setInt(2, couponId);
             pstmt.executeUpdate();
             ResultSet resultSet = pstmt.getGeneratedKeys();
-            resultSet.next();
+            System.out.println(resultSet.next());
             // should I return connection every time or does it do it automatically
             Coupon coupon = getOneCoupon(couponId);
             changeCouponAmount(couponId,coupon.getAmount()-1);
@@ -317,5 +317,38 @@ public class CouponsDBDAO implements CouponsDAO {
             throw new CouponSystemException("delete exception");
         }
     }
+
+    public boolean doesCustomerPurchesExsist(int customerId, int couponId ){
+       String sql  =  "select * from CUSTOMERS_VS_COUPONS where CUSTOMER_ID = ? and  COUPON_ID = ?";
+        Connection   connection = null;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+
+
+
+            PreparedStatement  ps = connection.prepareStatement(sql);
+
+            ps.setInt(1, customerId);
+            ps.setInt(2, couponId);
+
+        ResultSet rs = ps.executeQuery();
+        ConnectionPool.getInstance().restoreConnection(connection);
+
+        if (rs.next()) {
+            return true;
+        } else {
+            return false;
+        }
+
+        } catch (CouponSystemException e) {
+            throw new RuntimeException(e);
+        }
+        catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+
 
 }

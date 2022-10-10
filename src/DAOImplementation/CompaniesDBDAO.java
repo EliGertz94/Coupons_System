@@ -30,6 +30,8 @@ public class CompaniesDBDAO implements CompaniesDAO {
            }
             resultSet.close();
             stm.close();
+            //return connection was added
+            ConnectionPool.getInstance().restoreConnection(con);
             return company;
 
         } catch (CouponSystemException e) {
@@ -75,7 +77,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
     public void updateCompany(Company company) throws CouponSystemException {
         String sql = "UPDATE company SET email = ?, password=? WHERE id = ?";
         try(Connection con = ConnectionPool.getInstance().getConnection();
-            PreparedStatement ps = con.prepareStatement(sql);) {
+            PreparedStatement ps = con.prepareStatement(sql)) {
 
             // set the preparedstatement parameters
             ps.setString(1,company.getEmail());
@@ -84,6 +86,8 @@ public class CompaniesDBDAO implements CompaniesDAO {
 
 
             ps.executeUpdate();
+            //returning connection was added
+            ConnectionPool.getInstance().restoreConnection(con);
         } catch (SQLException | CouponSystemException e) {
            throw new CouponSystemException("update error at Company");
         }
@@ -104,8 +108,10 @@ public class CompaniesDBDAO implements CompaniesDAO {
             Statement stm = con.createStatement();
             int rawCount =  stm.executeUpdate(sql);
             if(rawCount ==0){
-                throw new CouponSystemException("deleteCompany - no rows were effected ");
+                System.out.println("no id was found - no item were deleted");
             }
+            // returning connection was added
+            ConnectionPool.getInstance().restoreConnection(con);
 
         } catch (SQLException | CouponSystemException e) {
             throw new CouponSystemException("delete exception");
@@ -137,7 +143,8 @@ public class CompaniesDBDAO implements CompaniesDAO {
             int rawCount =  stm.executeUpdate(sql);
             if(rawCount ==0){
             }
-
+            //returning connection was added
+            ConnectionPool.getInstance().restoreConnection(con);
         } catch (SQLException | CouponSystemException e) {
             throw new CouponSystemException("delete exception");
         }
@@ -180,6 +187,8 @@ public class CompaniesDBDAO implements CompaniesDAO {
 
             resultSet.close();
             stm.close();
+            //returning connection was added
+            ConnectionPool.getInstance().restoreConnection(con);
             return companies;
 
         }catch (SQLException e) {
@@ -206,6 +215,8 @@ public class CompaniesDBDAO implements CompaniesDAO {
 
             resultSet.close();
             stm.close();
+            //return connection was added
+            ConnectionPool.getInstance().restoreConnection(con);
             return company;
 
         }catch (SQLException e) {
@@ -221,6 +232,9 @@ public class CompaniesDBDAO implements CompaniesDAO {
             Statement stm = con.createStatement();
             stm.execute(sql);
             ResultSet resultSet=stm.executeQuery(sql);
+
+            //return connection was added
+            ConnectionPool.getInstance().restoreConnection(con);
             return resultSet.next();
         }catch (SQLException e) {
             throw new CouponSystemException("getOneCompany");
@@ -240,6 +254,8 @@ public class CompaniesDBDAO implements CompaniesDAO {
 
             resultSet.close();
             stm.close();
+            //return connection was added
+            ConnectionPool.getInstance().restoreConnection(con);
             if (result) {
                 return true;
             } else {
@@ -269,6 +285,8 @@ public class CompaniesDBDAO implements CompaniesDAO {
 
             resultSet.close();
             stm.close();
+            //return connection was added
+            ConnectionPool.getInstance().restoreConnection(con);
             if (result) {
                 return true;
             } else {

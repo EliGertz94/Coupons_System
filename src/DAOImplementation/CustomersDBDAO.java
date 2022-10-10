@@ -136,8 +136,8 @@ public class CustomersDBDAO implements CustomersDAO {
                 customer.setId(resultSet.getInt(1));
                 customer.setFirstName(resultSet.getString(2));
                 customer.setLastName(resultSet.getString(3));
-                customer.setEmail(resultSet.getString(3));
-                customer.setPassword(resultSet.getString(4));
+                customer.setEmail(resultSet.getString(4));
+                customer.setPassword(resultSet.getString(5));
                 customers.add(customer);
 
 
@@ -206,4 +206,6 @@ public class CustomersDBDAO implements CustomersDAO {
 
 
     }
+
+
 }
