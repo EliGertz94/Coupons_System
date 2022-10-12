@@ -5,6 +5,7 @@ import Beans.Customer;
 import Exceptions.CouponSystemException;
 
 import java.net.ConnectException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public interface CustomersDAO {
@@ -15,7 +16,7 @@ public interface CustomersDAO {
      *
      * */
 
-    Customer isCustomerExists(String email,String password);
+    Customer isCustomerExists(String email,String password) throws CouponSystemException, SQLException;
 
     int addCustomer(Customer customer) throws CouponSystemException;
 

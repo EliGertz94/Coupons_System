@@ -12,7 +12,7 @@ import java.net.ConnectException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class AdminFacade extends  ClientFacade {
+public class AdminFacade extends ClientFacade {
 
     public boolean logIn(String email, String password) {
        if(email.equals("admin@admin.com") && password.equals("admin")){

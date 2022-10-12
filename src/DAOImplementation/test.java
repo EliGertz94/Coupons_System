@@ -28,7 +28,7 @@ public class test {
         ConnectionPool connectionPool= ConnectionPool.getInstance();
         CouponsDBDAO couponsDAO = new CouponsDBDAO();
 
-        String str = "2022-10-30 11:30:40";
+        String str = "2022-12-30 11:30:40";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime dateTime = LocalDateTime.parse(str, formatter);
 
@@ -38,6 +38,7 @@ public class test {
         coupon.setImage("eatingman.png");
         coupon.setCategory(Category.Food);
         coupon.setStartDate(LocalDateTime.now());
+        coupon.setEndDate(LocalDateTime.now());
         coupon.setPrice(120);
         coupon.setEndDate(dateTime);
         coupon.setCompanyId(786876);
@@ -47,7 +48,7 @@ public class test {
       //  System.out.println(couponsDAO.doesCouponExists(4));
         CouponsDBDAO couponsDAO1 = new CouponsDBDAO();
         CompanyFacade companyFacade = new CompanyFacade();
-        companyFacade.logIn("maam@gmail.com","word");
+       // companyFacade.logIn("maam@gmail.com","word");
         companyFacade.addCoupon(coupon);
         CustomerFacade customerFacade = new CustomerFacade();
         customerFacade.logIn("email1@gmail.com","password");

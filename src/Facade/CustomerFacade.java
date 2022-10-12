@@ -17,11 +17,18 @@ public class CustomerFacade  extends ClientFacade {
 
     private int customerId;
 
-    public int logIn(String email, String password) {
+    public Customer logIn(String email, String password) {
 
-        Customer customer= customersDAO.isCustomerExists(email, password);
+        Customer customer= null;
+        try {
+            customer = customersDAO.isCustomerExists(email, password);
+        } catch (CouponSystemException e) {
+            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         customerId =customer.getId();
-        return customer.getId();
+        return customer;
 
     }
 

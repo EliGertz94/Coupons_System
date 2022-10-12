@@ -10,7 +10,7 @@ import DAOImplementation.CustomersDBDAO;
 
 public abstract class ClientFacade {
 
-    ConnectionPool connectionPool = ConnectionPool.getInstance();
+    //ConnectionPool connectionPool = ConnectionPool.getInstance();
 
     protected    CompaniesDAO companiesDAO = new CompaniesDBDAO();
     protected    CouponsDAO couponsDAO = new CouponsDBDAO();

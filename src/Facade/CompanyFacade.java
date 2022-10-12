@@ -14,12 +14,21 @@ public class CompanyFacade extends ClientFacade{
     private int companyId;
 
 
-    // יש לבדוק את פרטי ה-Login (אימייל וסיסמה) מול מסד הנתונים.
+// how to show exception when getting the object
+    public Company logIn(String email, String password)  {
 
-    public Company logIn(String email, String password) {
+        Company company= null;
+        try {
+            company = companiesDAO.isCompanyExists(email,password);
+        } catch (CouponSystemException e) {
+            System.out.println("CouponSystemException login ");
+          return company;
+        } catch (SQLException e) {
+            System.out.println("SQLException login ");
 
-      Company company=  companiesDAO.isCompanyExists(email,password);
-      this.companyId=company.getId();
+            return company;
+        }
+        this.companyId=company.getId();
         return company;
 
        /// go to db and check and then give the id value by result

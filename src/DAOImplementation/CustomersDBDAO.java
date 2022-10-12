@@ -16,16 +16,16 @@ public class CustomersDBDAO implements CustomersDAO {
 
 
     @Override
-    public Customer isCustomerExists(String email, String password) {
+    public synchronized Customer isCustomerExists(String email, String password) throws CouponSystemException, SQLException {
 
         String sql = "select * from customer where email = '" +
                 email + "'" + " AND password = '" + password + "'";
-        try (Connection con = ConnectionPool.getInstance().getConnection();) {
+       Connection con = ConnectionPool.getInstance().getConnection();
             Statement stm = con.createStatement();
             stm.execute(sql);
             ResultSet resultSet = stm.executeQuery(sql);
             Customer customer = new Customer();
-            if(resultSet.next()) {
+            if( resultSet.next()) {
                 customer.setId(resultSet.getInt(1));
                 customer.setFirstName(resultSet.getString(2));
                 customer.setLastName(resultSet.getString(3));
@@ -37,15 +37,11 @@ public class CustomersDBDAO implements CustomersDAO {
             }
             return customer;
 
-        } catch (CouponSystemException e) {
-            throw new RuntimeException(e);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+
     }
 
         @Override
-    public int addCustomer(Customer customer) throws CouponSystemException {
+    public synchronized int addCustomer(Customer customer) throws CouponSystemException {
 
         String SQL = " insert into customer(FIRST_NAME,LAST_NAME,email,password) values(?,?,?,?)";
 
@@ -78,7 +74,7 @@ public class CustomersDBDAO implements CustomersDAO {
 
 
     @Override
-    public void updateCustomer(Customer customer) throws  CouponSystemException {
+    public synchronized void updateCustomer(Customer customer) throws  CouponSystemException {
         String sql = "UPDATE customer SET FIRST_NAME = ?,LAST_NAME = ?, email = ?, password=? WHERE id = ?";
         try(Connection con = ConnectionPool.getInstance().getConnection();
             PreparedStatement ps = con.prepareStatement(sql);) {
@@ -98,7 +94,7 @@ public class CustomersDBDAO implements CustomersDAO {
     }
 
     @Override
-    public void deleteCustomer(int customerId) throws CouponSystemException {
+    public synchronized void deleteCustomer(int customerId) throws CouponSystemException {
         String sql = "delete from customer where id  = " + customerId;
         try(Connection con = ConnectionPool.getInstance().getConnection()) {
 
@@ -116,14 +112,10 @@ public class CustomersDBDAO implements CustomersDAO {
     }
 
 
-    //create table `customer`(`id` int NOT NULL PRIMARY KEY auto_increment,
-    // `FIRST_NAME` varchar(25),
-    //  `LAST_NAME` varchar(25),
-    // `email` varchar(50) UNIQUE NOT NULL,
-    // `password` varchar(60) NOT NULL );
+
 
     @Override
-    public ArrayList<Customer> getAllCustomers() throws CouponSystemException {
+    public synchronized ArrayList<Customer> getAllCustomers() throws CouponSystemException {
 
         String sql = "select * from customer";
         ArrayList<Customer> customers  = new ArrayList<>();
@@ -155,7 +147,7 @@ public class CustomersDBDAO implements CustomersDAO {
     }
 
     @Override
-    public Customer getOneCustomer(int customerId) throws CouponSystemException {
+    public synchronized Customer getOneCustomer(int customerId) throws CouponSystemException {
 
         String sql = "select * from customer where id = "+ customerId;
         try(Connection con = ConnectionPool.getInstance().getConnection();) {
@@ -181,7 +173,7 @@ public class CustomersDBDAO implements CustomersDAO {
     }
 
     @Override
-    public boolean getCustomerByEmail(String companyEmail) throws CouponSystemException {
+    public synchronized boolean getCustomerByEmail(String companyEmail) throws CouponSystemException {
 
         String sql = "select * from customer where email = '"+ companyEmail.replaceAll(" ", "")+"'";
         try(Connection con = ConnectionPool.getInstance().getConnection();
@@ -200,8 +192,8 @@ public class CustomersDBDAO implements CustomersDAO {
             }
 
 
-        }catch (SQLException | CouponSystemException e) {
-            throw new CouponSystemException("getCompanyByEmail");
+        }catch (CouponSystemException | SQLException e) {
+            throw new CouponSystemException("getCustomerByEmail ");
         }
 
 
