@@ -6,7 +6,9 @@ import Beans.Coupon;
 import Beans.Customer;
 import ClientLogIn.ClientType;
 import ClientLogIn.LoginManager;
+import DAO.CouponsDAO;
 import DAOImplementation.CompaniesDBDAO;
+import DAOImplementation.CouponsDBDAO;
 import Exceptions.CouponSystemException;
 import Job.CouponExpirationDailyJob;
 
@@ -40,12 +42,15 @@ public class test {
         coupon.setStartDate(LocalDateTime.now());
         coupon.setPrice(120);
         coupon.setEndDate(dateTime);
-        coupon.setCompanyId(786876);
-        coupon.setTitle("bbb ");
-        companyFacade.addCoupon(coupon);
-        CouponExpirationDailyJob couponExpirationDailyJob = new CouponExpirationDailyJob();
-        couponExpirationDailyJob.run();
+        coupon.setCompanyId(3);
+        coupon.setTitle("bbb");
+        coupon.setId(26);
+        //companyFacade.addCoupon(coupon);
+       // CouponExpirationDailyJob couponExpirationDailyJob = new CouponExpirationDailyJob();
+      //  couponExpirationDailyJob.run();
 
+        CouponsDAO couponsDAO = new CouponsDBDAO();
+        couponsDAO.updateCoupon(coupon);
 
     }
 }

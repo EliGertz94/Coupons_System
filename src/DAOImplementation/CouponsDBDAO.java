@@ -106,33 +106,40 @@ public class CouponsDBDAO implements CouponsDAO {
 
     @Override
     public synchronized void updateCoupon(Coupon coupon) throws CouponSystemException {
-        String sql = "UPDATE coupons SET CATEGORY_ID = ?," +
-                "TITLE = ?, " +
+        String sql = "UPDATE coupons SET " +
+                "COMPANY_ID = ?,"+
+                "CATEGORY_ID = ?,"+
+                "TITLE = ?," +
                 "DESCRIPTION = ?," +
-                " START_DATE =?, " +
+                "START_DATE =?, " +
                 "END_DATE =?, " +
                 "AMOUNT =?," +
-                " PRICE = ? " +
-                ",IMAGE = ?" +
+                " PRICE = ?," +
+                "IMAGE = ?" +
                 " WHERE id = ?";
         try(Connection con = ConnectionPool.getInstance().getConnection();
             PreparedStatement ps = con.prepareStatement(sql);) {
 
             // set the preparedstatement parameters
-            ps.setInt(1,coupon.getCategory().getCode());
-            ps.setString(2,coupon.getTitle());
-            ps.setString(3,coupon.getDescription());
-            ps.setDate(4,Date.valueOf(coupon.getStartDate().toLocalDate()));
-            ps.setDate(5,Date.valueOf(coupon.getEndDate().toLocalDate()));
-            ps.setInt(6,coupon.getAmount());
-            ps.setDouble(7,coupon.getPrice());
-            ps.setString(8,coupon.getImage());
+          //  ps.setInt(1,coupon.getId());
+            ps.setInt(1,coupon.getCompanyId());
+            ps.setInt(2,coupon.getCategory().getCode());
+            ps.setString(3,coupon.getTitle());
+            ps.setString(4,coupon.getDescription());
+            ps.setDate(5,Date.valueOf(coupon.getStartDate().toLocalDate()));
+            ps.setDate(6,Date.valueOf(coupon.getEndDate().toLocalDate()));
+            ps.setInt(7,coupon.getAmount());
+            ps.setDouble(8,coupon.getPrice());
+            ps.setString(9,coupon.getImage());
 
-            ps.setInt(9,coupon.getId());
+            ps.setInt(10,coupon.getId());
             ps.executeUpdate();
 
-        } catch (SQLException | CouponSystemException e) {
-            throw new CouponSystemException("update error at Company");
+        } catch (SQLException e) {
+            throw new CouponSystemException("update SQLException");
+        }
+        catch (CouponSystemException e) {
+            throw new CouponSystemException("update coupon");
         }
     }
 
