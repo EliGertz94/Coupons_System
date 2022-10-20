@@ -15,7 +15,7 @@ public class LoginManager {
 
     public static LoginManager getInstance(){return instance;}
 
-    public ClientFacade logIn(String email, String password,ClientType clientType) {
+    public synchronized ClientFacade logIn(String email, String password,ClientType clientType) {
 
         switch (clientType) {
             case Administrator:
@@ -27,9 +27,13 @@ public class LoginManager {
                 break;
             case Company:
                 CompanyFacade companyFacade = new CompanyFacade();
-                // logIn() will initialize the id of companyFacade instance
-                 if(companyFacade.logIn(email,password).getEmail()!=null)
-                 {return companyFacade;}
+              //  AdminFacade adminFacade1 = new AdminFacade();
+                 if(companyFacade.logIn(email,password))
+                 {
+                    // if(adminFacade1.getOneCompany(companyFacade.getCompanyId()).getEmail()!= null){
+                         return companyFacade;
+                  //   }
+                 }
 
 
                 break;

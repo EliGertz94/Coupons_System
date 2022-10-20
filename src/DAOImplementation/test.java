@@ -52,7 +52,7 @@ public class test {
         companyFacade.addCoupon(coupon);
         CustomerFacade customerFacade = new CustomerFacade();
         customerFacade.logIn("email1@gmail.com","password");
-        customerFacade.purchaseCoupon(14);
+        //customerFacade.purchaseCoupon(14);
         System.out.println(companyFacade.getAllCompanyCoupons(2));
 //        CompanyFacade companyFacade = new CompanyFacade();
 //        CompanyFacade companyFacade1 = new CompanyFacade();

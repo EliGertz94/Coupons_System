@@ -17,7 +17,7 @@ public class CustomerFacade  extends ClientFacade {
 
     private int customerId;
 
-    public Customer logIn(String email, String password) {
+    public synchronized Customer logIn(String email, String password) {
 
         Customer customer= null;
         try {
@@ -37,7 +37,7 @@ public class CustomerFacade  extends ClientFacade {
     //o לא ניתן לרכוש את הקופון אם הכמות שלו היא 0.V
         //o לא ניתן לרכוש את הקופון אם תאריך התפוגה שלו כבר הגיע.
         //o לאחר הרכישה יש להוריד את הכמות במלאי של הקופון ב-1.
-        public void purchaseCoupon(int couponId) throws CouponSystemException {
+        public synchronized void purchaseCoupon(int couponId) throws CouponSystemException {
             if(!couponsDAO.doesCustomerPurchesExsist(this.customerId,couponId)){
 
                 if(couponsDAO.getOneCoupon(couponId).getAmount()>0
@@ -51,7 +51,7 @@ public class CustomerFacade  extends ClientFacade {
     }
 
 
-    public ArrayList<Coupon> getCustomerCoupons() throws CouponSystemException, SQLException {
+    public synchronized ArrayList<Coupon> getCustomerCoupons() throws CouponSystemException, SQLException {
 
         String sql = "select * from coupons where coupons.id  in " +
                 "(select COUPON_ID from CUSTOMERS_VS_COUPONS" +
@@ -92,7 +92,7 @@ public class CustomerFacade  extends ClientFacade {
 
         }}
 
-    public ArrayList<Coupon> getCustomerCoupons(double maxPrice) throws CouponSystemException, SQLException {
+    public synchronized ArrayList<Coupon> getCustomerCoupons(double maxPrice) throws CouponSystemException, SQLException {
 
 
         String sql = "select * from coupons where coupons.id  in " +
@@ -136,7 +136,7 @@ public class CustomerFacade  extends ClientFacade {
 
     }
 
-    public Customer getCustomerDetails(){
+    public synchronized Customer getCustomerDetails(){
         try {
             return customersDAO.getOneCustomer(this.customerId);
         } catch (CouponSystemException e) {

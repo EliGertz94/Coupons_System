@@ -7,26 +7,11 @@ import Beans.Customer;
 import ConnectionPoolRelated.ConnectionPool;
 import DAO.CouponsDAO;
 import Exceptions.CouponSystemException;
-
-import java.net.ConnectException;
 import java.sql.*;
 import java.util.ArrayList;
 
 public class CouponsDBDAO implements CouponsDAO {
 
-   // ConnectionPool   connectionPool;
-
-//    public CouponsDBDAO(ConnectionPool connectionPool) {
-//        this.connectionPool = connectionPool;
-//    }
-
-//    {
-//        try {
-//            connectionPool.getInstance().getConnection();
-//        } catch (CouponSystemException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
 
 
     @Override

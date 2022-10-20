@@ -12,8 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CompaniesDBDAO implements CompaniesDAO {
+
     @Override
-    public synchronized Company isCompanyExists(String email, String password) throws CouponSystemException, SQLException {
+    public synchronized boolean isCompanyExists(String email, String password) throws CouponSystemException, SQLException {
 
         String sql = "select * from company where email = '" +
                 email + "'" + " AND password = '" + password + "'";
@@ -21,7 +22,27 @@ public class CompaniesDBDAO implements CompaniesDAO {
             Statement stm = con.createStatement();
             stm.execute(sql);
             ResultSet resultSet = stm.executeQuery(sql);
-            Company company = new Company();
+
+           boolean result  =resultSet.next();
+            resultSet.close();
+           stm.close();
+            ConnectionPool.getInstance().restoreConnection(con);
+            return result ;
+
+
+    }
+
+    //return the company by the logint details
+    // to later get the id of the login object company instance
+    public synchronized Company companyByLogin(String email, String password) throws CouponSystemException, SQLException {
+
+        String sql = "select * from company where email = '" +
+                email + "'" + " AND password = '" + password + "'";
+        Connection con = ConnectionPool.getInstance().getConnection();
+        Statement stm = con.createStatement();
+        stm.execute(sql);
+        ResultSet resultSet = stm.executeQuery(sql);
+        Company company = new Company();
 
            if( resultSet.next()) {
                company.setId(resultSet.getInt(1));
@@ -31,12 +52,10 @@ public class CompaniesDBDAO implements CompaniesDAO {
            }
             resultSet.close();
             stm.close();
-            //return connection was added
+           // con.close();
 
-            ConnectionPool.getInstance().restoreConnection(con);
-            return company;
-
-
+        ConnectionPool.getInstance().restoreConnection(con);
+        return company;
     }
 
         @Override
@@ -44,8 +63,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
 
             String SQL = " insert into company(name,email,password) values(?,?,?)";
 
-
-            try{
+          try{
 
                 Connection con = ConnectionPool.getInstance().getConnection();
                 System.out.println(con);
@@ -147,21 +165,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
             throw new CouponSystemException("delete exception");
         }
     }
-//
-//    public void deleteCompanyCoupons(int companyId) throws ConnectException {
-//        String sql = "delete from CUSTOMERS_VS_COUPONS where coupons COMPANY_ID = " + companyId;
-//        try(Connection con = ConnectionPool.getInstance().getConnection()) {
-//
-//            Statement stm = con.createStatement();
-//            int rawCount =  stm.executeUpdate(sql);
-//            if(rawCount ==0){
-//                throw new ConnectException("delete exception ");
-//            }
-//
-//        } catch (SQLException | CouponSystemException e) {
-//            throw new ConnectException("delete exception");
-//        }
-//    }
+
 
     @Override
     public synchronized ArrayList<Company> getAllCompanies() throws  CouponSystemException {
@@ -199,20 +203,24 @@ public class CompaniesDBDAO implements CompaniesDAO {
     @Override
     public synchronized Company getOneCompany(int companyId) throws CouponSystemException {
 
-        String sql = "select * from company where id = "+ companyId;
+        String sql = "select * from company where id = '"+ companyId+"'";
         try(Connection con = ConnectionPool.getInstance().getConnection();) {
             Statement stm = con.createStatement();
             stm.execute(sql);
             ResultSet resultSet=stm.executeQuery(sql);
-            resultSet.next();
-                Company company = new Company();
-                company.setId(resultSet.getInt(1));
-                company.setName(resultSet.getString(2));
-                company.setEmail(resultSet.getString(3));
-                company.setPassword(resultSet.getString(4));
+            Company company = new Company();
 
+            if( resultSet.next()) {
+
+                company.setId(resultSet.getInt(1));
+               company.setName(resultSet.getString(2));
+               company.setEmail(resultSet.getString(3));
+               company.setPassword(resultSet.getString(4));
+           }
             resultSet.close();
             stm.close();
+
+
             //return connection was added
             ConnectionPool.getInstance().restoreConnection(con);
             return company;

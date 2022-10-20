@@ -18,6 +18,8 @@ public interface CustomersDAO {
 
     Customer isCustomerExists(String email,String password) throws CouponSystemException, SQLException;
 
+    // customerby Log In
+
     int addCustomer(Customer customer) throws CouponSystemException;
 
     void updateCustomer(Customer customer) throws CouponSystemException;

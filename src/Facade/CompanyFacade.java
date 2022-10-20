@@ -15,24 +15,19 @@ public class CompanyFacade extends ClientFacade{
 
 
 // how to show exception when getting the object
-    public Company logIn(String email, String password)  {
+    public synchronized boolean logIn(String email, String password)  {
 
-        Company company= null;
         try {
-            company = companiesDAO.isCompanyExists(email,password);
+            this.companyId=companiesDAO.companyByLogin(email,password).getId();
+        boolean result  =   companiesDAO.isCompanyExists(email,password);
+            return result;
         } catch (CouponSystemException e) {
-            System.out.println("CouponSystemException login ");
-          return company;
+            System.out.println("login details are not correct ");
+          return false;
         } catch (SQLException e) {
-            System.out.println("SQLException login ");
-
-            return company;
+            System.out.println("login details are not correct ");
+            return false;
         }
-        this.companyId=company.getId();
-        return company;
-
-       /// go to db and check and then give the id value by result
-        //instantiat the
     }
 
     //הוספת קופון חדש.
@@ -41,7 +36,7 @@ public class CompanyFacade extends ClientFacade{
 
 
 
-    public void addCoupon(Coupon coupon) throws CouponSystemException {
+    public synchronized void addCoupon(Coupon coupon) throws CouponSystemException {
         coupon.setCompanyId(this.companyId);
 
         if(!couponsDAO.uniqueTitleByCompany(coupon.getCompanyId(),coupon.getTitle())){
@@ -57,17 +52,17 @@ public class CompanyFacade extends ClientFacade{
     // o לא ניתן לעדכן את קוד החברה.
 
     //should i check validity of coupon ?
-    public void updateCoupon(Coupon coupon) throws CouponSystemException {
+    public synchronized void updateCoupon(Coupon coupon) throws CouponSystemException {
         couponsDAO.updateCoupon(coupon);
     }
 
     //מחיקת קופון
     //o יש למחוק בנוסף גם את היסטוריית רכישת הקופון ע"י לקוחות.
-    public void deleteCoupon(int couponId) throws CouponSystemException {
+    public synchronized void deleteCoupon(int couponId) throws CouponSystemException {
         couponsDAO.deleteCoupon(couponId);
     }
 
-    public ArrayList<Coupon> getAllCompanyCoupons() throws CouponSystemException {
+    public  synchronized ArrayList<Coupon> getAllCompanyCoupons() throws CouponSystemException {
 
         String sql = "select * from coupons WHERE COMPANY_ID = " + this.companyId;
         ArrayList<Coupon> coupons  = new ArrayList<>();
@@ -110,7 +105,7 @@ public class CompanyFacade extends ClientFacade{
 
     }
 
-    public ArrayList<Coupon> getAllCompanyCoupons(Category category) throws CouponSystemException {
+    public synchronized ArrayList<Coupon> getAllCompanyCoupons(Category category) throws CouponSystemException {
 
         String sql = "select * from coupons WHERE COMPANY_ID = " + this.companyId+" AND CATEGORY_ID = " +category.getCode();
         ArrayList<Coupon> coupons  = new ArrayList<>();
@@ -154,7 +149,7 @@ public class CompanyFacade extends ClientFacade{
     }
 
 
-    public ArrayList<Coupon> getAllCompanyCoupons(double maxPrice) throws CouponSystemException {
+    public synchronized ArrayList<Coupon> getAllCompanyCoupons(double maxPrice) throws CouponSystemException {
         String sql = "select * from coupons WHERE COMPANY_ID = " + this.companyId+" AND PRICE <= " +maxPrice;
         ArrayList<Coupon> coupons  = new ArrayList<>();
         try(Connection con = ConnectionPool.getInstance().getConnection()) {
@@ -196,6 +191,7 @@ public class CompanyFacade extends ClientFacade{
 
     }
 
-//    public Company getCompanyDetails(){
-//    }
+    public int getCompanyId() {
+        return companyId;
+    }
 }
