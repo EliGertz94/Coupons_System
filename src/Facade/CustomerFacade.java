@@ -38,7 +38,7 @@ public class CustomerFacade  extends ClientFacade {
         //o לא ניתן לרכוש את הקופון אם תאריך התפוגה שלו כבר הגיע.
         //o לאחר הרכישה יש להוריד את הכמות במלאי של הקופון ב-1.
         public synchronized void purchaseCoupon(int couponId) throws CouponSystemException {
-            if(!couponsDAO.doesCustomerPurchesExsist(this.customerId,couponId)){
+            if(!couponsDAO.doesCustomerPurchaseExist(this.customerId,couponId)){
 
                 if(couponsDAO.getOneCoupon(couponId).getAmount()>0
                         && couponsDAO.getOneCoupon(couponId).getEndDate().isBefore(LocalDateTime.now())) {
