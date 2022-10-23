@@ -15,7 +15,7 @@ public class LoginManager {
 
     public static LoginManager getInstance(){return instance;}
 
-    public synchronized ClientFacade logIn(String email, String password,ClientType clientType) {
+    public synchronized ClientFacade logIn(String email, String password,ClientType clientType) throws CouponSystemException {
 
         switch (clientType) {
             case Administrator:

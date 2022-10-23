@@ -13,60 +13,80 @@ import java.util.List;
 
 public class CompaniesDBDAO implements CompaniesDAO {
 
+    /**
+     * isCompanyExists - return true/false if company user can log in
+     */
     @Override
-    public synchronized boolean isCompanyExists(String email, String password) throws CouponSystemException, SQLException {
+    public synchronized boolean isCompanyExists(String email, String password) throws CouponSystemException {
 
         String sql = "select * from company where email = '" +
                 email + "'" + " AND password = '" + password + "'";
-       Connection con = ConnectionPool.getInstance().getConnection();
-            Statement stm = con.createStatement();
+        Connection con = null;
+        try {
+            con = ConnectionPool.getInstance().getConnection();
+
+        Statement stm = con.createStatement();
             stm.execute(sql);
             ResultSet resultSet = stm.executeQuery(sql);
 
            boolean result  =resultSet.next();
             resultSet.close();
-           stm.close();
+            stm.close();
             ConnectionPool.getInstance().restoreConnection(con);
             return result ;
 
+        } catch (SQLException e) {
+            throw new CouponSystemException("isCompanyExists sql excepting at companyDBDAO",e);
+        }
+
+
 
     }
-
-    //return the company by the logint details
-    // to later get the id of the login object company instance
-    public synchronized Company companyByLogin(String email, String password) throws CouponSystemException, SQLException {
+    /**
+     * companyByLogin - return the company object acording to the login details
+     * also to later get the id of the object
+     */
+    public synchronized Company companyByLogin(String email, String password) throws CouponSystemException {
 
         String sql = "select * from company where email = '" +
                 email + "'" + " AND password = '" + password + "'";
         Connection con = ConnectionPool.getInstance().getConnection();
-        Statement stm = con.createStatement();
-        stm.execute(sql);
-        ResultSet resultSet = stm.executeQuery(sql);
-        Company company = new Company();
+        Statement stm = null;
+        try {
+            stm = con.createStatement();
+            stm.execute(sql);
+            ResultSet resultSet = stm.executeQuery(sql);
+            Company company = new Company();
 
-           if( resultSet.next()) {
-               company.setId(resultSet.getInt(1));
-               company.setName(resultSet.getString(2));
-               company.setEmail(resultSet.getString(3));
-               company.setPassword(resultSet.getString(4));
-           }
+            if( resultSet.next()) {
+                company.setId(resultSet.getInt(1));
+                company.setName(resultSet.getString(2));
+                company.setEmail(resultSet.getString(3));
+                company.setPassword(resultSet.getString(4));
+            }
             resultSet.close();
             stm.close();
-           // con.close();
+            con.close();
 
-        ConnectionPool.getInstance().restoreConnection(con);
-        return company;
+            ConnectionPool.getInstance().restoreConnection(con);
+            return company;
+
+        } catch (SQLException e) {
+            throw new CouponSystemException("companyByLogin - SQLException at companyDBDAO",e);
+        }
     }
 
-        @Override
+    /**
+     * addCompany - add/insert company to DB
+     */
+    @Override
     public synchronized int addCompany(Company company) throws CouponSystemException {
 
-            String SQL = " insert into company(name,email,password) values(?,?,?)";
+        String SQL = " insert into company(name,email,password) values(?,?,?)";
 
           try{
 
                 Connection con = ConnectionPool.getInstance().getConnection();
-                System.out.println(con);
                 PreparedStatement pstmt = con.prepareStatement(SQL,PreparedStatement.RETURN_GENERATED_KEYS);
 
                 pstmt.setString(1, company.getName());
@@ -76,19 +96,21 @@ public class CompaniesDBDAO implements CompaniesDAO {
                 ResultSet resultSet = pstmt.getGeneratedKeys();
                 resultSet.next();
                 int id= resultSet.getInt(1);
-                System.out.println("company with id number "+ id +  " was created");
 
                 ConnectionPool.getInstance().restoreConnection(con);
                 return id;
 
-            } catch (SQLException | CouponSystemException e) {
-                throw new CouponSystemException("add company error");
+            } catch (SQLException e) {
+                throw new CouponSystemException("add company error at companyDBDAO");
 
             }
 
 
     }
 
+    /**
+     * updateCompany - update company on DB
+     */
     @Override
     public synchronized void updateCompany(Company company) throws CouponSystemException {
         String sql = "UPDATE company SET email = ?, password=? WHERE id = ?";
@@ -104,15 +126,15 @@ public class CompaniesDBDAO implements CompaniesDAO {
             ps.executeUpdate();
             //returning connection was added
             ConnectionPool.getInstance().restoreConnection(con);
-        } catch (SQLException | CouponSystemException e) {
-           throw new CouponSystemException("update error at Company");
+        } catch (SQLException e) {
+           throw new CouponSystemException("update error at Company at companyDBDAO");
         }
     }
 
-    //delete from CUSTOMERS_VS_COUPONS where COUPON_ID  =1;
-    //delete from coupons where COMPANY_ID  =1;
-    //delete from company where id  =1;
 
+    /**
+     * deleteCompany - delete company from DB
+     */
     @Override
     public synchronized void deleteCompany(int companyId) throws CouponSystemException {
 
@@ -129,11 +151,14 @@ public class CompaniesDBDAO implements CompaniesDAO {
             // returning connection was added
             ConnectionPool.getInstance().restoreConnection(con);
 
-        } catch (SQLException | CouponSystemException e) {
-            throw new CouponSystemException("delete exception");
+        } catch (SQLException e) {
+            throw new CouponSystemException("delete company error at CompanyDBDAO");
         }
     }
 
+    /**
+     * deleteFromCoupons - delete coupon according to company id
+     */
     @Override
     public  synchronized void deleteFromCoupons(int companyId) throws CouponSystemException{
         String sql = "delete from coupons where COMPANY_ID  = " + companyId;
@@ -141,15 +166,17 @@ public class CompaniesDBDAO implements CompaniesDAO {
 
             Statement stm = con.createStatement();
             int rawCount =  stm.executeUpdate(sql);
-            if(rawCount ==0){
-                System.out.println("deleteFromCVC - no rows were effected ");
-            }
 
-        } catch (SQLException | CouponSystemException e) {
-            throw new CouponSystemException("delete exception");
+            System.out.println("amount of rows effected "+ rawCount);
+
+        } catch (SQLException e) {
+            throw new CouponSystemException("delete coupon by company id  error  at CompanyDBDAO ",e);
         }
     }
 
+    /**
+     * deleteFromCVC - delete from CUSTOMERS_VS_COUPONS table according to company id
+     */
     @Override
     public synchronized void deleteFromCVC(int companyId) throws CouponSystemException{
         String sql = "delete from CUSTOMERS_VS_COUPONS where COUPON_ID  = " + companyId;
@@ -157,16 +184,17 @@ public class CompaniesDBDAO implements CompaniesDAO {
 
             Statement stm = con.createStatement();
             int rawCount =  stm.executeUpdate(sql);
-            if(rawCount ==0){
-            }
-            //returning connection was added
+            System.out.println("amount of rows effected "+ rawCount);
+
             ConnectionPool.getInstance().restoreConnection(con);
-        } catch (SQLException | CouponSystemException e) {
-            throw new CouponSystemException("delete exception");
+        } catch (SQLException e) {
+            throw new CouponSystemException("deleteFromCVC error at CompanyDBDAO");
         }
     }
 
-
+    /**
+     * getAllCompanies - returns an arraylist of type company object containing all the companies in the company table
+     */
     @Override
     public synchronized ArrayList<Company> getAllCompanies() throws  CouponSystemException {
 
@@ -183,23 +211,23 @@ public class CompaniesDBDAO implements CompaniesDAO {
                 company.setEmail(resultSet.getString(3));
                 company.setPassword(resultSet.getString(4));
                 companies.add(company);
-
-
             }
 
             resultSet.close();
             stm.close();
-            //returning connection was added
             ConnectionPool.getInstance().restoreConnection(con);
             return companies;
 
         }catch (SQLException e) {
-        throw new CouponSystemException("getAllCompanies");
+        throw new CouponSystemException("getAllCompanies error at CompanyDBDAO ",e);
     }
 
 
     }
 
+    /**
+     * getOneCompany - returns one company object by company id
+     */
     @Override
     public synchronized Company getOneCompany(int companyId) throws CouponSystemException {
 
@@ -209,10 +237,8 @@ public class CompaniesDBDAO implements CompaniesDAO {
             stm.execute(sql);
             ResultSet resultSet=stm.executeQuery(sql);
             Company company = new Company();
-
-            if( resultSet.next()) {
-
-                company.setId(resultSet.getInt(1));
+            if(resultSet.next()) {
+               company.setId(resultSet.getInt(1));
                company.setName(resultSet.getString(2));
                company.setEmail(resultSet.getString(3));
                company.setPassword(resultSet.getString(4));
@@ -220,33 +246,19 @@ public class CompaniesDBDAO implements CompaniesDAO {
             resultSet.close();
             stm.close();
 
-
-            //return connection was added
             ConnectionPool.getInstance().restoreConnection(con);
             return company;
 
         }catch (SQLException e) {
-            throw new CouponSystemException("getOneCompany");
+            throw new CouponSystemException("getOneCompany error at CompanyDBDAO");
         }
 
 
     }
 
-    public synchronized boolean checkCompany(int companyId) throws CouponSystemException {
-        String sql = "select * from company where id = "+ companyId;
-        try(Connection con = ConnectionPool.getInstance().getConnection();) {
-            Statement stm = con.createStatement();
-            stm.execute(sql);
-            ResultSet resultSet=stm.executeQuery(sql);
-
-            //return connection was added
-            ConnectionPool.getInstance().restoreConnection(con);
-            return resultSet.next();
-        }catch (SQLException e) {
-            throw new CouponSystemException("getOneCompany");
-        }
-    }
-
+    /**
+     * getCompanyByName - returns true/false if a company with a given companyName exist
+     */
     @Override
     public synchronized boolean getCompanyByName(String companyName) throws CouponSystemException {
 
@@ -260,28 +272,25 @@ public class CompaniesDBDAO implements CompaniesDAO {
 
             resultSet.close();
             stm.close();
-            //return connection was added
             ConnectionPool.getInstance().restoreConnection(con);
-            if (result) {
-                return true;
-            } else {
-                return false;
-            }
 
+            return result;
 
-
-
-
-        }catch (SQLException | CouponSystemException e) {
-            throw new CouponSystemException("getCompanyByName");
+        }catch (SQLException  e) {
+            throw new CouponSystemException("getCompanyByName error at CompanyDBDAO");
         }
 
 
     }
 
+    /**
+     * getCompanyByName - returns true/false if a company with a given companyEmail exist
+     */
     public synchronized boolean getCompanyByEmail(String companyEmail) throws CouponSystemException {
 
-        String sql = "select * from company where email = '"+ companyEmail.replaceAll(" ", "")+"'";
+        String sql = "select * from company where email = '"
+                + companyEmail.replaceAll(" ", "")+"'";
+
         try(Connection con = ConnectionPool.getInstance().getConnection();
             Statement stm = con.createStatement();) {
             stm.execute(sql);
@@ -291,19 +300,14 @@ public class CompaniesDBDAO implements CompaniesDAO {
 
             resultSet.close();
             stm.close();
-            //return connection was added
             ConnectionPool.getInstance().restoreConnection(con);
-            if (result) {
-                return true;
-            } else {
-                return false;
-            }
 
+            return result;
 
-        }catch (SQLException | CouponSystemException e) {
-            throw new CouponSystemException("getCompanyByEmail");
+        }catch (SQLException e) {
+            throw new CouponSystemException("getCompanyByEmail error at CompanyDBDAO");
         }
 
-
     }
+
 }

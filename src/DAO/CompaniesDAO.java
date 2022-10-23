@@ -15,8 +15,8 @@ public interface CompaniesDAO {
      *
      * */
 
-    boolean isCompanyExists(String email,String password) throws CouponSystemException, SQLException;
-    Company companyByLogin(String email, String password) throws CouponSystemException, SQLException;
+    boolean isCompanyExists(String email,String password) throws CouponSystemException;
+    Company companyByLogin(String email, String password) throws CouponSystemException;
 
     int addCompany(Company company) throws  CouponSystemException;
 

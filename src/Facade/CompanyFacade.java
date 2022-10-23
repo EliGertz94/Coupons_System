@@ -15,18 +15,14 @@ public class CompanyFacade extends ClientFacade{
 
 
 // how to show exception when getting the object
-    public synchronized boolean logIn(String email, String password)  {
+    public synchronized boolean logIn(String email, String password) throws CouponSystemException {
 
         try {
             this.companyId=companiesDAO.companyByLogin(email,password).getId();
         boolean result  =   companiesDAO.isCompanyExists(email,password);
             return result;
         } catch (CouponSystemException e) {
-            System.out.println("login details are not correct ");
-          return false;
-        } catch (SQLException e) {
-            System.out.println("login details are not correct ");
-            return false;
+           throw new CouponSystemException("",e);
         }
     }
 
