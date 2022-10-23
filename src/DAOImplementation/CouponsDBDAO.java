@@ -326,9 +326,9 @@ public class CouponsDBDAO implements CouponsDAO {
      */
     public synchronized boolean doesCustomerPurchaseExist(int customerId, int couponId ) throws CouponSystemException{
        String sql  =  "select * from CUSTOMERS_VS_COUPONS where CUSTOMER_ID = ? and  COUPON_ID = ?";
-        Connection   connection = null;
+
         try {
-            connection = ConnectionPool.getInstance().getConnection();
+            Connection connection = ConnectionPool.getInstance().getConnection();
             PreparedStatement  ps = connection.prepareStatement(sql);
 
             ps.setInt(1, customerId);
