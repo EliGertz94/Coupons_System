@@ -5,17 +5,13 @@ import Beans.Customer;
 import ClientLogIn.ClientType;
 import ClientLogIn.LoginManager;
 import ConnectionPoolRelated.ConnectionPool;
-import DAOImplementation.CompaniesDBDAO;
 import DAOImplementation.CouponsDBDAO;
-import DAOImplementation.test;
 import Exceptions.CouponSystemException;
 import Facade.AdminFacade;
 import Facade.CompanyFacade;
 import Facade.CustomerFacade;
 import Job.CouponExpirationDailyJob;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class Test {
