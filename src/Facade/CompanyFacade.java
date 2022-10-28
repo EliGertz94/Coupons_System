@@ -64,7 +64,8 @@ public class CompanyFacade extends ClientFacade{
 
         String sql = "select * from coupons WHERE COMPANY_ID = " + this.companyId;
         ArrayList<Coupon> coupons  = new ArrayList<>();
-        try(Connection con = ConnectionPool.getInstance().getConnection()) {
+        Connection con = ConnectionPool.getInstance().getConnection();
+        try{
             Statement stm = con.createStatement();
             stm.execute(sql);
             ResultSet resultSet=stm.executeQuery(sql);
@@ -96,8 +97,11 @@ public class CompanyFacade extends ClientFacade{
             stm.close();
             return coupons;
 
-        }catch (SQLException | CouponSystemException e) {
+        }catch (SQLException  e) {
             throw new CouponSystemException("delete exception");
+        }finally {
+            ConnectionPool.getInstance().restoreConnection(con);
+
         }
 
 
@@ -107,7 +111,8 @@ public class CompanyFacade extends ClientFacade{
 
         String sql = "select * from coupons WHERE COMPANY_ID = " + this.companyId+" AND CATEGORY_ID = " +category.getCode();
         ArrayList<Coupon> coupons  = new ArrayList<>();
-        try(Connection con = ConnectionPool.getInstance().getConnection()) {
+        Connection con = ConnectionPool.getInstance().getConnection();
+        try {
             Statement stm = con.createStatement();
             stm.execute(sql);
             ResultSet resultSet=stm.executeQuery(sql);
@@ -139,8 +144,11 @@ public class CompanyFacade extends ClientFacade{
             stm.close();
             return coupons;
 
-        }catch (SQLException | CouponSystemException e) {
+        }catch (SQLException  e) {
             throw new CouponSystemException("delete exception");
+        }finally {
+            ConnectionPool.getInstance().restoreConnection(con);
+
         }
 
 

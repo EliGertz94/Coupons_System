@@ -47,7 +47,7 @@ public class ConnectionPool {
         }
         while (this.connections.isEmpty()) {
             try {
-                System.out.println("waiting");
+                System.out.println("waiting get ");
                 wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -65,10 +65,11 @@ public class ConnectionPool {
     }
 
     public synchronized void closeAllConnections() throws CouponSystemException {
+        System.out.println("waiting close");
         this.isActive = false;
+
         while (this.connections.size() < MAX_CONNECTIONS) {
             try {
-                System.out.println("waiting");
                 wait();
 
             } catch (InterruptedException e) {

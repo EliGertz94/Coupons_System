@@ -60,7 +60,8 @@ public class CustomerFacade  extends ClientFacade {
                 "(select COUPON_ID from CUSTOMERS_VS_COUPONS" +
                 " where CUSTOMER_ID =" + this.customerId + ")";
         ArrayList<Coupon> coupons = new ArrayList<>();
-        try (Connection con = ConnectionPool.getInstance().getConnection()) {
+        Connection con = ConnectionPool.getInstance().getConnection();
+        try  {
             Statement stm = con.createStatement();
             stm.execute(sql);
             ResultSet resultSet = stm.executeQuery(sql);
@@ -95,7 +96,11 @@ public class CustomerFacade  extends ClientFacade {
 
         }catch (SQLException e ){
             throw new CouponSystemException("getCustomerCoupons on Customer Facade");
-        }}
+        }finally {
+            ConnectionPool.getInstance().restoreConnection(con);
+
+        }
+    }
 
     public synchronized ArrayList<Coupon> getCustomerCoupons(double maxPrice) throws CouponSystemException {
 
@@ -140,6 +145,9 @@ public class CustomerFacade  extends ClientFacade {
 
         }catch(SQLException e){
             throw new CouponSystemException("getCustomerCoupons max price at Customer Facade");
+        }finally {
+            ConnectionPool.getInstance().restoreConnection(con);
+
         }
 
     }
@@ -151,7 +159,8 @@ public class CustomerFacade  extends ClientFacade {
                 "(select COUPON_ID from CUSTOMERS_VS_COUPONS" +
                 " where CUSTOMER_ID =" + this.customerId + ")  AND coupons.CATEGORY_ID= "+couponCategory.getCode();
         ArrayList<Coupon> coupons = new ArrayList<>();
-        try (Connection con = ConnectionPool.getInstance().getConnection()) {
+        Connection con = ConnectionPool.getInstance().getConnection();
+        try  {
             Statement stm = con.createStatement();
             stm.execute(sql);
             ResultSet resultSet = stm.executeQuery(sql);
@@ -186,6 +195,9 @@ public class CustomerFacade  extends ClientFacade {
 
         }catch (SQLException e){
             throw new CouponSystemException("getCustomerCoupons by category ");
+        }finally {
+            ConnectionPool.getInstance().restoreConnection(con);
+
         }
 
     }
