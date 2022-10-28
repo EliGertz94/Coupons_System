@@ -87,12 +87,10 @@ public class CompaniesDBDAO implements CompaniesDAO {
 
           try{
                 PreparedStatement pstmt = con.prepareStatement(SQL,PreparedStatement.RETURN_GENERATED_KEYS);
-              System.out.println("try1");
                 pstmt.setString(1, company.getName());
                 pstmt.setString(2, company.getEmail());
                 pstmt.setString(3, company.getPassword());
                 pstmt.executeUpdate();
-              System.out.println("try2");
 
               ResultSet resultSet = pstmt.getGeneratedKeys();
                 resultSet.next();
@@ -148,18 +146,20 @@ public class CompaniesDBDAO implements CompaniesDAO {
         deleteFromCVC(companyId);
         deleteFromCoupons(companyId);
         String sql = "DELETE  FROM company  WHERE id= '" + companyId+"'";
-        try(Connection con = ConnectionPool.getInstance().getConnection()) {
+        Connection con = ConnectionPool.getInstance().getConnection();
+        try {
 
             Statement stm = con.createStatement();
             int rawCount =  stm.executeUpdate(sql);
             if(rawCount ==0){
                 System.out.println("no id was found - no item were deleted");
             }
-            // returning connection was added
-            ConnectionPool.getInstance().restoreConnection(con);
 
         } catch (SQLException e) {
             throw new CouponSystemException("delete company error at CompanyDBDAO");
+        }finally {
+            ConnectionPool.getInstance().restoreConnection(con);
+
         }
     }
 
@@ -171,7 +171,6 @@ public class CompaniesDBDAO implements CompaniesDAO {
         String sql = "delete from coupons where COMPANY_ID  = " + companyId;
         Connection con = ConnectionPool.getInstance().getConnection();
         try{
-            System.out.println(" is it closed "+con.isClosed());
 
             Statement stm = con.createStatement();
             int rawCount =  stm.executeUpdate(sql);
@@ -214,7 +213,8 @@ public class CompaniesDBDAO implements CompaniesDAO {
 
         String sql = "select * from company";
         ArrayList<Company> companies  = new ArrayList<>();
-        try(Connection con = ConnectionPool.getInstance().getConnection();) {
+        Connection con = ConnectionPool.getInstance().getConnection();
+        try {
             Statement stm = con.createStatement();
             stm.execute(sql);
             ResultSet resultSet=stm.executeQuery(sql);
@@ -229,12 +229,14 @@ public class CompaniesDBDAO implements CompaniesDAO {
 
             resultSet.close();
             stm.close();
-            ConnectionPool.getInstance().restoreConnection(con);
             return companies;
 
         }catch (SQLException e) {
-        throw new CouponSystemException("getAllCompanies error at CompanyDBDAO ",e);
-    }
+            throw new CouponSystemException("getAllCompanies error at CompanyDBDAO ",e);
+        }finally {
+            ConnectionPool.getInstance().restoreConnection(con);
+
+        }
 
 
     }
@@ -311,16 +313,12 @@ public class CompaniesDBDAO implements CompaniesDAO {
                 + companyEmail.replaceAll(" ", "")+"'";
         Connection con = ConnectionPool.getInstance().getConnection();
         try{
-            System.out.println(con.isClosed());
 
-            System.out.println(companyEmail);
             Statement stm = con.createStatement();
-            System.out.println(stm);
 
             stm.execute(sql);
             ResultSet resultSet=stm.executeQuery(sql);
             boolean result=  resultSet.next();
-            System.out.println("b");
 
             resultSet.close();
             stm.close();

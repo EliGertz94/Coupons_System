@@ -21,8 +21,8 @@ public class CustomersDBDAO implements CustomersDAO {
         String sql = "select * from customer where email = '" +
                 email + "'" + " AND password = '" + password + "'";
 
+        Connection con = ConnectionPool.getInstance().getConnection();
         try {
-            Connection con = ConnectionPool.getInstance().getConnection();
             Statement stm = con.createStatement();
 
             stm.execute(sql);
@@ -37,12 +37,14 @@ public class CustomersDBDAO implements CustomersDAO {
                 customer.setPassword(resultSet.getString(5));
                 resultSet.close();
                 stm.close();
-                ConnectionPool.getInstance().restoreConnection(con);
             }
             return customer;
 
         } catch (SQLException e) {
             throw new CouponSystemException("isCustomerExists error at CustomerDBDAO",e);
+        }finally {
+
+            ConnectionPool.getInstance().restoreConnection(con);
         }
     }
 
@@ -55,9 +57,9 @@ public class CustomersDBDAO implements CustomersDAO {
 
         String SQL = "insert into customer(FIRST_NAME,LAST_NAME,email,password) values(?,?,?,?)";
 
+        Connection con = ConnectionPool.getInstance().getConnection();
         try{
 
-            Connection con = ConnectionPool.getInstance().getConnection();
             PreparedStatement pstmt = con.prepareStatement(SQL,PreparedStatement.RETURN_GENERATED_KEYS);
 
             pstmt.setString(1, customer.getFirstName());
@@ -69,12 +71,13 @@ public class CustomersDBDAO implements CustomersDAO {
             resultSet.next();
             int id= resultSet.getInt(1);
 
-            ConnectionPool.getInstance().restoreConnection(con);
             return id;
 
         } catch (SQLException e) {
             throw new CouponSystemException("addCustomer error at CustomerDBDOA",e);
 
+        }finally {
+            ConnectionPool.getInstance().restoreConnection(con);
         }
 
 
@@ -87,8 +90,8 @@ public class CustomersDBDAO implements CustomersDAO {
     @Override
     public synchronized void updateCustomer(Customer customer) throws  CouponSystemException {
         String sql = "UPDATE customer SET FIRST_NAME = ?,LAST_NAME = ?, email = ?, password=? WHERE id = ?";
+        Connection con = ConnectionPool.getInstance().getConnection();
         try{
-            Connection con = ConnectionPool.getInstance().getConnection();
             PreparedStatement ps = con.prepareStatement(sql);
 
             // set the preparedstatement parameters
@@ -100,10 +103,11 @@ public class CustomersDBDAO implements CustomersDAO {
 
 
             ps.executeUpdate();
-            ConnectionPool.getInstance().restoreConnection(con);
 
         } catch (SQLException  e) {
             throw new CouponSystemException("updateCustomer error at CustomerDBDAO");
+        }finally {
+            ConnectionPool.getInstance().restoreConnection(con);
         }
     }
 
@@ -113,8 +117,8 @@ public class CustomersDBDAO implements CustomersDAO {
     @Override
     public synchronized void deleteCustomer(int customerId) throws CouponSystemException {
         String sql = "delete from customer where id  = " + customerId;
+        Connection con = ConnectionPool.getInstance().getConnection();
         try {
-            Connection con = ConnectionPool.getInstance().getConnection();
             Statement stm = con.createStatement();
             int rawCount =  stm.executeUpdate(sql);
             if(rawCount ==0){
@@ -123,11 +127,13 @@ public class CustomersDBDAO implements CustomersDAO {
                 System.out.println(customerId+ " was deleted");
             }
 
-            ConnectionPool.getInstance().restoreConnection(con);
 
 
         } catch (SQLException e) {
             throw new CouponSystemException("deleteCustomer error at CustomersDBDAO");
+        }finally {
+            ConnectionPool.getInstance().restoreConnection(con);
+
         }
     }
 
@@ -141,8 +147,8 @@ public class CustomersDBDAO implements CustomersDAO {
 
         String sql = "select * from customer";
         ArrayList<Customer> customers  = new ArrayList<>();
+        Connection con = ConnectionPool.getInstance().getConnection();
         try {
-            Connection con = ConnectionPool.getInstance().getConnection();
             Statement stm = con.createStatement();
             stm.execute(sql);
             ResultSet resultSet=stm.executeQuery(sql);
@@ -158,11 +164,12 @@ public class CustomersDBDAO implements CustomersDAO {
 
             resultSet.close();
             stm.close();
-            ConnectionPool.getInstance().restoreConnection(con);
             return customers;
 
         }catch (SQLException e) {
             throw new CouponSystemException("getAllCustomers error at CustomersDBDAO");
+        }finally {
+            ConnectionPool.getInstance().restoreConnection(con);
         }
 
 
@@ -175,8 +182,9 @@ public class CustomersDBDAO implements CustomersDAO {
     public synchronized Customer getOneCustomer(int customerId) throws CouponSystemException {
 
         String sql = "select * from customer where id = "+ customerId;
+        Connection con = ConnectionPool.getInstance().getConnection();
+
         try {
-            Connection con = ConnectionPool.getInstance().getConnection();
             Statement stm = con.createStatement();
             stm.execute(sql);
             ResultSet resultSet=stm.executeQuery(sql);
@@ -190,13 +198,14 @@ public class CustomersDBDAO implements CustomersDAO {
 
             resultSet.close();
             stm.close();
-            con.close();
-            ConnectionPool.getInstance().restoreConnection(con);
 
             return customer;
 
         }catch (SQLException e) {
             throw new CouponSystemException("getOneCustomer error at CustomersDBDAO",e);
+        }finally {
+            ConnectionPool.getInstance().restoreConnection(con);
+
         }
 
     }
@@ -207,7 +216,8 @@ public class CustomersDBDAO implements CustomersDAO {
     public synchronized boolean getCustomerByEmail(String customerEmail) throws CouponSystemException {
 
         String sql = "select * from customer where email = '"+ customerEmail.replaceAll(" ", "")+"'";
-        try(Connection con = ConnectionPool.getInstance().getConnection();
+        Connection con = ConnectionPool.getInstance().getConnection();
+        try(
             Statement stm = con.createStatement();) {
             stm.execute(sql);
             ResultSet resultSet=stm.executeQuery(sql);
@@ -216,7 +226,6 @@ public class CustomersDBDAO implements CustomersDAO {
 
             resultSet.close();
             stm.close();
-            ConnectionPool.getInstance().restoreConnection(con);
 
             if (result) {
                 return true;
@@ -225,6 +234,9 @@ public class CustomersDBDAO implements CustomersDAO {
             }
         }catch (SQLException e) {
             throw new CouponSystemException("getCustomerByEmail error at CustomersDBDAO",e);
+        }finally {
+            ConnectionPool.getInstance().restoreConnection(con);
+
         }
 
 

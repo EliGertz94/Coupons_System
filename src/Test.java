@@ -1,4 +1,5 @@
 import Beans.Company;
+import Beans.Customer;
 import ClientLogIn.ClientType;
 import ClientLogIn.LoginManager;
 import DAOImplementation.CompaniesDBDAO;
@@ -31,19 +32,26 @@ public class Test {
              /**
               * Administrator login
               */
-             //Company( String name, String email, String password)
              try {
                  AdminFacade admin = (AdminFacade) LoginManager.getInstance().logIn("admin@admin.com","admin", ClientType.Administrator);
-                   admin.addCompany(new Company("B in","B@gmail.com","123456A"));
                    admin.addCompany(new Company("B 22in","B33@gmail.com","12323456A"));
                    Company company=  admin.getOneCompany(6);
                      company.setEmail("12@gmail.com");
                     // company.setName("12dw");
                  //update after changing email can't change when the name is diffrent
                      admin.updateCompany(company);
+                     //delete company
                      Company company2 = admin.getOneCompany(3);
-
                      admin.deleteCompany(company2);
+                 System.out.println(admin.getAllCompanies());
+                 Customer customer = new Customer("Avi","shmueli","AS@gmail.com","AV1234");
+                 admin.addCustomer(customer);
+                Customer customerAvi =  admin.getOneCustomer(7);
+                 customerAvi.setLastName("Shemesh");
+                 admin.updateCustomer(customerAvi);
+                 admin.deleteCustomer(4);
+                 System.out.println(admin.getAllCustomers());
+
 
 
 

@@ -94,6 +94,7 @@ public class AdminFacade extends ClientFacade {
     public synchronized void addCustomer (Customer customer) throws CouponSystemException {
         try{
             if (!customersDAO.getCustomerByEmail(customer.getEmail())) {
+
                 customersDAO.addCustomer(customer);
                 System.out.println(customer.getFirstName() + "  " + customer.getLastName()
                         + " was added");
@@ -108,10 +109,11 @@ public class AdminFacade extends ClientFacade {
     // לא ניתן לעדכן את קוד הלקוח.
     public synchronized void updateCustomer (Customer customer) throws CouponSystemException {
         try{
-            if (customer.getEmail().equals(customersDAO.getOneCustomer(customer.getId()))) {
+            if (!customersDAO.getCustomerByEmail(customer.getEmail())) {
                 customersDAO.updateCustomer(customer);
                 System.out.println(customer.getFirstName() + " was updated");
-            } else if (!customersDAO.getCustomerByEmail(customer.getEmail())) {
+            } else if (customersDAO.getCustomerByEmail(customer.getEmail())
+                    && customer.getEmail().equals(customersDAO.getOneCustomer(customer.getId()).getEmail())) {
                 customersDAO.updateCustomer(customer);
                 System.out.println(customer.getFirstName() + " was updated");
 
