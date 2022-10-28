@@ -11,12 +11,11 @@ import DAOImplementation.CustomersDBDAO;
 public abstract class ClientFacade {
 
     //ConnectionPool connectionPool = ConnectionPool.getInstance();
-
     protected    CompaniesDAO companiesDAO = new CompaniesDBDAO();
     protected    CouponsDAO couponsDAO = new CouponsDBDAO();
     protected    CustomersDAO customersDAO=  new CustomersDBDAO();
 
-    /// initiat with interface and put everything on interface
+    //initiat with interface and put everything on interface
 
     //public abstract boolean logIn(String email, String password);
 }

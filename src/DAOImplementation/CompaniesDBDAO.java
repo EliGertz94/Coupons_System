@@ -66,13 +66,13 @@ public class CompaniesDBDAO implements CompaniesDAO {
             }
             resultSet.close();
             stm.close();
-            con.close();
 
-            ConnectionPool.getInstance().restoreConnection(con);
             return company;
 
         } catch (SQLException e) {
             throw new CouponSystemException("companyByLogin - SQLException at companyDBDAO",e);
+        }finally {
+            ConnectionPool.getInstance().restoreConnection(con);
         }
     }
 
@@ -82,28 +82,31 @@ public class CompaniesDBDAO implements CompaniesDAO {
     @Override
     public synchronized int addCompany(Company company) throws CouponSystemException {
 
-        String SQL = " insert into company(name,email,password) values(?,?,?)";
+        String SQL = "insert into company(name,email,password) values(?,?,?)";
+        Connection con = ConnectionPool.getInstance().getConnection();
 
           try{
-
-                Connection con = ConnectionPool.getInstance().getConnection();
                 PreparedStatement pstmt = con.prepareStatement(SQL,PreparedStatement.RETURN_GENERATED_KEYS);
-
+              System.out.println("try1");
                 pstmt.setString(1, company.getName());
                 pstmt.setString(2, company.getEmail());
                 pstmt.setString(3, company.getPassword());
                 pstmt.executeUpdate();
-                ResultSet resultSet = pstmt.getGeneratedKeys();
+              System.out.println("try2");
+
+              ResultSet resultSet = pstmt.getGeneratedKeys();
                 resultSet.next();
                 int id= resultSet.getInt(1);
-
-                ConnectionPool.getInstance().restoreConnection(con);
+                pstmt.close();
                 return id;
 
             } catch (SQLException e) {
                 throw new CouponSystemException("add company error at companyDBDAO");
 
-            }
+            }finally {
+              ConnectionPool.getInstance().restoreConnection(con);
+
+          }
 
 
     }
@@ -113,22 +116,26 @@ public class CompaniesDBDAO implements CompaniesDAO {
      */
     @Override
     public synchronized void updateCompany(Company company) throws CouponSystemException {
-        String sql = "UPDATE company SET email = ?, password=? WHERE id = ?";
-        try(Connection con = ConnectionPool.getInstance().getConnection();
-            PreparedStatement ps = con.prepareStatement(sql)) {
+        String sql = "UPDATE company SET name= ?, email = ?, password=? WHERE id = ?";
+        Connection con = ConnectionPool.getInstance().getConnection();
+           try {
+               PreparedStatement ps = con.prepareStatement(sql);
 
             // set the preparedstatement parameters
-            ps.setString(1,company.getEmail());
-            ps.setString(2,company.getPassword());
-            ps.setInt(3,company.getId());
+            ps.setString(1,company.getName());
+            ps.setString(2,company.getEmail());
+            ps.setString(3,company.getPassword());
+            ps.setInt(4,company.getId());
 
 
             ps.executeUpdate();
-            //returning connection was added
-            ConnectionPool.getInstance().restoreConnection(con);
+            ps.close();
         } catch (SQLException e) {
            throw new CouponSystemException("update error at Company at companyDBDAO");
-        }
+        }finally {
+               ConnectionPool.getInstance().restoreConnection(con);
+
+           }
     }
 
 
@@ -162,7 +169,9 @@ public class CompaniesDBDAO implements CompaniesDAO {
     @Override
     public  synchronized void deleteFromCoupons(int companyId) throws CouponSystemException{
         String sql = "delete from coupons where COMPANY_ID  = " + companyId;
-        try(Connection con = ConnectionPool.getInstance().getConnection()) {
+        Connection con = ConnectionPool.getInstance().getConnection();
+        try{
+            System.out.println(" is it closed "+con.isClosed());
 
             Statement stm = con.createStatement();
             int rawCount =  stm.executeUpdate(sql);
@@ -171,6 +180,8 @@ public class CompaniesDBDAO implements CompaniesDAO {
 
         } catch (SQLException e) {
             throw new CouponSystemException("delete coupon by company id  error  at CompanyDBDAO ",e);
+        }finally {
+            ConnectionPool.getInstance().restoreConnection(con);
         }
     }
 
@@ -180,15 +191,18 @@ public class CompaniesDBDAO implements CompaniesDAO {
     @Override
     public synchronized void deleteFromCVC(int companyId) throws CouponSystemException{
         String sql = "delete from CUSTOMERS_VS_COUPONS where COUPON_ID  = " + companyId;
-        try(Connection con = ConnectionPool.getInstance().getConnection()) {
+        Connection con = ConnectionPool.getInstance().getConnection();
+        try {
 
             Statement stm = con.createStatement();
             int rawCount =  stm.executeUpdate(sql);
             System.out.println("amount of rows effected "+ rawCount);
 
-            ConnectionPool.getInstance().restoreConnection(con);
         } catch (SQLException e) {
             throw new CouponSystemException("deleteFromCVC error at CompanyDBDAO");
+        }finally {
+            ConnectionPool.getInstance().restoreConnection(con);
+
         }
     }
 
@@ -232,7 +246,8 @@ public class CompaniesDBDAO implements CompaniesDAO {
     public synchronized Company getOneCompany(int companyId) throws CouponSystemException {
 
         String sql = "select * from company where id = '"+ companyId+"'";
-        try(Connection con = ConnectionPool.getInstance().getConnection();) {
+        Connection con = ConnectionPool.getInstance().getConnection();
+        try{
             Statement stm = con.createStatement();
             stm.execute(sql);
             ResultSet resultSet=stm.executeQuery(sql);
@@ -246,11 +261,13 @@ public class CompaniesDBDAO implements CompaniesDAO {
             resultSet.close();
             stm.close();
 
-            ConnectionPool.getInstance().restoreConnection(con);
             return company;
 
         }catch (SQLException e) {
             throw new CouponSystemException("getOneCompany error at CompanyDBDAO");
+        }finally {
+            ConnectionPool.getInstance().restoreConnection(con);
+
         }
 
 
@@ -263,8 +280,8 @@ public class CompaniesDBDAO implements CompaniesDAO {
     public synchronized boolean getCompanyByName(String companyName) throws CouponSystemException {
 
         String sql = "Select  * from company where name =  '"+ companyName+"'";
-        try(Connection con = ConnectionPool.getInstance().getConnection();
-           ) {
+        Connection con = ConnectionPool.getInstance().getConnection();
+        try {
             Statement stm = con.createStatement();
             stm.execute(sql);
             ResultSet resultSet=stm.executeQuery(sql);
@@ -272,12 +289,14 @@ public class CompaniesDBDAO implements CompaniesDAO {
 
             resultSet.close();
             stm.close();
-            ConnectionPool.getInstance().restoreConnection(con);
 
             return result;
 
         }catch (SQLException  e) {
             throw new CouponSystemException("getCompanyByName error at CompanyDBDAO");
+        }finally {
+            ConnectionPool.getInstance().restoreConnection(con);
+
         }
 
 
@@ -290,22 +309,29 @@ public class CompaniesDBDAO implements CompaniesDAO {
 
         String sql = "select * from company where email = '"
                 + companyEmail.replaceAll(" ", "")+"'";
+        Connection con = ConnectionPool.getInstance().getConnection();
+        try{
+            System.out.println(con.isClosed());
 
-        try(Connection con = ConnectionPool.getInstance().getConnection();
-            Statement stm = con.createStatement();) {
+            System.out.println(companyEmail);
+            Statement stm = con.createStatement();
+            System.out.println(stm);
+
             stm.execute(sql);
             ResultSet resultSet=stm.executeQuery(sql);
-
             boolean result=  resultSet.next();
+            System.out.println("b");
 
             resultSet.close();
             stm.close();
-            ConnectionPool.getInstance().restoreConnection(con);
+
 
             return result;
 
         }catch (SQLException e) {
             throw new CouponSystemException("getCompanyByEmail error at CompanyDBDAO");
+        }finally {
+            ConnectionPool.getInstance().restoreConnection(con);
         }
 
     }

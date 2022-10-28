@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 
-public class CouponExpirationDailyJob implements Runnable {
+public class CouponExpirationDailyJob extends Thread {
 
     CouponsDAO couponsDAO = new CouponsDBDAO();
 
@@ -34,17 +34,18 @@ public class CouponExpirationDailyJob implements Runnable {
                 }
                 Thread.sleep(10000); // 12 hours
             } catch (InterruptedException e) {
+                //add custom
                 System.out.println("Thread was interrupted");
-                quit = false;
             } catch (CouponSystemException e) {
                 System.out.println("Thread error , please check thread again !");
+            }finally {
                 quit = false;
             }
 
         }
     }
 
-    public void stop(){
+    public void stopJob(){
         Thread.interrupted();
     }
 }
