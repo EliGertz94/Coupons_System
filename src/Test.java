@@ -113,12 +113,12 @@ public class Test {
                  Customer customer1=  customerFacade.getCustomerDetails();
                  System.out.println(customer1);
 
-                 couponJob.stopJob();
+
 
              } catch (CouponSystemException e) {
                  throw new RuntimeException(e);
              }finally {
-
+                 couponJob.stopJob();
                  try {
                      ConnectionPool.getInstance().closeAllConnections();
                  } catch (CouponSystemException e) {
