@@ -22,7 +22,7 @@ public class CompanyFacade extends ClientFacade{
         boolean result  =   companiesDAO.isCompanyExists(email,password);
             return result;
         } catch (CouponSystemException e) {
-           throw new CouponSystemException("",e);
+           throw new CouponSystemException("logIn at CompanyFacade",e);
         }
     }
 
@@ -49,6 +49,8 @@ public class CompanyFacade extends ClientFacade{
 
     //should i check validity of coupon ?
     public synchronized void updateCoupon(Coupon coupon) throws CouponSystemException {
+
+        coupon.setCompanyId(this.companyId);
         couponsDAO.updateCoupon(coupon);
     }
 
@@ -148,7 +150,8 @@ public class CompanyFacade extends ClientFacade{
     public synchronized ArrayList<Coupon> getAllCompanyCoupons(double maxPrice) throws CouponSystemException {
         String sql = "select * from coupons WHERE COMPANY_ID = " + this.companyId+" AND PRICE <= " +maxPrice;
         ArrayList<Coupon> coupons  = new ArrayList<>();
-        try(Connection con = ConnectionPool.getInstance().getConnection()) {
+        Connection con = ConnectionPool.getInstance().getConnection();
+        try {
             Statement stm = con.createStatement();
             stm.execute(sql);
             ResultSet resultSet=stm.executeQuery(sql);
@@ -180,14 +183,22 @@ public class CompanyFacade extends ClientFacade{
             stm.close();
             return coupons;
 
-        }catch (SQLException | CouponSystemException e) {
+        }catch (SQLException  e) {
             throw new CouponSystemException("max price");
+        }finally {
+            ConnectionPool.getInstance().restoreConnection(con);
+
         }
 
 
     }
+    public synchronized Company getCompanyDetails( ) throws CouponSystemException {
 
-    public int getCompanyId() {
+       return companiesDAO.getOneCompany(this.getCompanyId());
+    }
+
+
+        public int getCompanyId() {
         return companyId;
     }
 }

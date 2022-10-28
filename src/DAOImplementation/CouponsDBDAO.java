@@ -214,14 +214,15 @@ public class CouponsDBDAO implements CouponsDAO {
             Statement stm = con.createStatement();
             stm.execute(sql);
             ResultSet resultSet=stm.executeQuery(sql);
-            resultSet.next();
+            Coupon coupon = new Coupon();
+            if(resultSet.next()) {
 
-                Coupon coupon = new Coupon();
+
                 coupon.setId(resultSet.getInt(1));
                 coupon.setCompanyId(resultSet.getInt(2));
 
                 for (Category category : Category.values()) {
-                    if(category.getCode() == resultSet.getInt(3)){
+                    if (category.getCode() == resultSet.getInt(3)) {
                         coupon.setCategory(category);
                     }
                 }
@@ -234,7 +235,7 @@ public class CouponsDBDAO implements CouponsDAO {
                 coupon.setAmount(resultSet.getInt(8));
                 coupon.setPrice(resultSet.getDouble(9));
                 coupon.setImage(resultSet.getString(10));
-
+            }
             resultSet.close();
             stm.close();
             return coupon;
@@ -265,7 +266,7 @@ public class CouponsDBDAO implements CouponsDAO {
             pstmt.setInt(2, couponId);
             pstmt.executeUpdate();
             ResultSet resultSet = pstmt.getGeneratedKeys();
-            System.out.println(resultSet.next());
+            resultSet.next();
             Coupon coupon = getOneCoupon(couponId);
             changeCouponAmount(couponId,coupon.getAmount()-1);
 
@@ -305,7 +306,7 @@ public class CouponsDBDAO implements CouponsDAO {
     }
 
     /**
-     * changeCouponAmount - chnges the amount of available coupons
+     * changeCouponAmount - changes the amount of available coupons
      */
     @Override
         public synchronized void changeCouponAmount(int couponId , int amountChange) throws CouponSystemException {

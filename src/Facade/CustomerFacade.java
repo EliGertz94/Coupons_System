@@ -41,17 +41,20 @@ public class CustomerFacade  extends ClientFacade {
             if(!couponsDAO.doesCustomerPurchaseExist(this.customerId,couponId)){
 
                 if(couponsDAO.getOneCoupon(couponId).getAmount()>0
-                        && couponsDAO.getOneCoupon(couponId).getEndDate().isBefore(LocalDateTime.now())) {
+                && couponsDAO.getOneCoupon(couponId).getEndDate().isAfter(LocalDateTime.now())) {
+
                     couponsDAO.addCouponPurchase(this.customerId, couponId);
+                }else{
+                    System.out.println("dfsdfsdf");
                 }
             }else{
-                System.out.println("already purchest this coupon");
+                System.out.println("already purchase this coupon");
             }
 
     }
 
 
-    public synchronized ArrayList<Coupon> getCustomerCoupons() throws CouponSystemException, SQLException {
+    public synchronized ArrayList<Coupon> getCustomerCoupons() throws CouponSystemException {
 
         String sql = "select * from coupons where coupons.id  in " +
                 "(select COUPON_ID from CUSTOMERS_VS_COUPONS" +
@@ -90,14 +93,63 @@ public class CustomerFacade  extends ClientFacade {
             return coupons;
 
 
+        }catch (SQLException e ){
+            throw new CouponSystemException("getCustomerCoupons on Customer Facade");
         }}
 
-    public synchronized ArrayList<Coupon> getCustomerCoupons(double maxPrice) throws CouponSystemException, SQLException {
+    public synchronized ArrayList<Coupon> getCustomerCoupons(double maxPrice) throws CouponSystemException {
 
 
         String sql = "select * from coupons where coupons.id  in " +
                 "(select COUPON_ID from CUSTOMERS_VS_COUPONS" +
                 " where CUSTOMER_ID =" + this.customerId + ")  AND coupons.PRICE <= "+maxPrice;
+        ArrayList<Coupon> coupons = new ArrayList<>();
+        Connection con = ConnectionPool.getInstance().getConnection();
+        try {
+            Statement stm = con.createStatement();
+            stm.execute(sql);
+            ResultSet resultSet = stm.executeQuery(sql);
+            while (resultSet.next()) {
+                Coupon coupon = new Coupon();
+                coupon.setId(resultSet.getInt(1));
+                coupon.setCompanyId(resultSet.getInt(2));
+
+                for (Category category : Category.values()) {
+                    if (category.getCode() == resultSet.getInt(3)) {
+                        coupon.setCategory(category);
+                    }
+                }
+                coupon.setTitle(resultSet.getString(4));
+                coupon.setDescription(resultSet.getString(5));
+                Timestamp startTimestamp = new Timestamp(resultSet.getDate(6).getTime());
+                coupon.setStartDate(startTimestamp.toLocalDateTime());
+                Timestamp endTimestamp = new Timestamp(resultSet.getDate(7).getTime());
+                coupon.setEndDate(endTimestamp.toLocalDateTime());
+
+                coupon.setAmount(resultSet.getInt(8));
+                coupon.setPrice(resultSet.getDouble(9));
+                coupon.setImage(resultSet.getString(10));
+                coupons.add(coupon);
+
+            }
+
+            resultSet.close();
+            stm.close();
+            return coupons;
+
+
+        }catch(SQLException e){
+            throw new CouponSystemException("getCustomerCoupons max price at Customer Facade");
+        }
+
+    }
+
+    public synchronized ArrayList<Coupon> getCustomerCoupons(Category couponCategory) throws CouponSystemException {
+
+
+        String sql = "select * from coupons where coupons.id  in " +
+                "(select COUPON_ID from CUSTOMERS_VS_COUPONS" +
+                " where CUSTOMER_ID =" + this.customerId + ")  AND coupons.CATEGORY_ID= "+couponCategory.getCode();
         ArrayList<Coupon> coupons = new ArrayList<>();
         try (Connection con = ConnectionPool.getInstance().getConnection()) {
             Statement stm = con.createStatement();
@@ -132,17 +184,23 @@ public class CustomerFacade  extends ClientFacade {
             return coupons;
 
 
+        }catch (SQLException e){
+            throw new CouponSystemException("getCustomerCoupons by category ");
         }
 
     }
 
-    public synchronized Customer getCustomerDetails(){
+
+    public synchronized Customer getCustomerDetails() throws CouponSystemException{
         try {
-            return customersDAO.getOneCustomer(this.customerId);
+            return customersDAO.getOneCustomer(this.getCustomerId());
         } catch (CouponSystemException e) {
-            throw new RuntimeException(e);
+            throw new CouponSystemException("getCustomerDetails error at CustomerFacade",e);
         }
 
     }
 
+    public int getCustomerId() {
+        return customerId;
     }
+}
