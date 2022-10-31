@@ -38,8 +38,6 @@ public class CouponExpirationDailyJob extends Thread {
                 System.out.println("Thread was interrupted");
             } catch (CouponSystemException e) {
                 System.out.println("Thread error , please check thread again !");
-            }finally {
-                System.out.println("finally thread");
             }
 
         }
@@ -47,7 +45,6 @@ public class CouponExpirationDailyJob extends Thread {
 
     public void stopJob(){
         quit = false;
-
         Thread.interrupted();
     }
 }

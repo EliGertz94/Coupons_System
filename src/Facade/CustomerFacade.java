@@ -41,11 +41,11 @@ public class CustomerFacade  extends ClientFacade {
             if(!couponsDAO.doesCustomerPurchaseExist(this.customerId,couponId)){
 
                 if(couponsDAO.getOneCoupon(couponId).getAmount()>0
-                && couponsDAO.getOneCoupon(couponId).getEndDate().isAfter(LocalDateTime.now())) {
+                && couponsDAO.getOneCoupon(couponId).getEndDate().isBefore(LocalDateTime.now())) {
 
                     couponsDAO.addCouponPurchase(this.customerId, couponId);
                 }else{
-                    System.out.println("dfsdfsdf");
+                   // System.out.println("dfsdfsdf");
                 }
             }else{
                 System.out.println("already purchase this coupon");

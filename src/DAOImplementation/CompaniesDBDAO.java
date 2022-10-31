@@ -51,9 +51,8 @@ public class CompaniesDBDAO implements CompaniesDAO {
         String sql = "select * from company where email = '" +
                 email + "'" + " AND password = '" + password + "'";
         Connection con = ConnectionPool.getInstance().getConnection();
-        Statement stm = null;
         try {
-            stm = con.createStatement();
+            Statement stm = con.createStatement();
             stm.execute(sql);
             ResultSet resultSet = stm.executeQuery(sql);
             Company company = new Company();
@@ -139,6 +138,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
 
     /**
      * deleteCompany - delete company from DB
+     * from all the child
      */
     @Override
     public synchronized void deleteCompany(int companyId) throws CouponSystemException {
@@ -151,9 +151,8 @@ public class CompaniesDBDAO implements CompaniesDAO {
 
             Statement stm = con.createStatement();
             int rawCount =  stm.executeUpdate(sql);
-            if(rawCount ==0){
-                System.out.println("no id was found - no item were deleted");
-            }
+
+            System.out.println("amount of the rows effected is "+ rawCount );
 
         } catch (SQLException e) {
             throw new CouponSystemException("delete company error at CompanyDBDAO");

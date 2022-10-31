@@ -24,6 +24,9 @@ public class AdminFacade extends ClientFacade {
        return false;
     }
 
+    /**
+     * addCompany -  adding a company if
+     */
     public synchronized void addCompany(Company company) throws CouponSystemException {
         try{
             if (!companiesDAO.getCompanyByName(company.getName()) &&
@@ -37,11 +40,13 @@ public class AdminFacade extends ClientFacade {
         }
     }
 
-
+    /**
+     * updateCompany -   update company if email is unique
+     * updating if the name is the same
+     */
     public synchronized void updateCompany(Company company) throws CouponSystemException {
 
         try{
-
 
             if(!company.getEmail().equals(companiesDAO.getOneCompany(company.getId()).getEmail())
             && !companiesDAO.getCompanyByEmail(company.getEmail())
@@ -51,7 +56,7 @@ public class AdminFacade extends ClientFacade {
                     companiesDAO.updateCompany(company);
                     System.out.println(company.getName() + " was updated");
                 }else {
-                    System.out.println("you can't changhe the name of the company");
+                    System.out.println("you can't change the name of the company");
                 }
 
             } else {
@@ -65,7 +70,9 @@ public class AdminFacade extends ClientFacade {
 
     }
 
-
+    /**
+     * deleteCompany - delete Company record using the DAO
+     */
     public synchronized void deleteCompany(Company company) throws CouponSystemException {
         try{
             companiesDAO.deleteCompany(company.getId());
@@ -99,7 +106,7 @@ public class AdminFacade extends ClientFacade {
                 System.out.println(customer.getFirstName() + "  " + customer.getLastName()
                         + " was added");
             } else {
-                System.out.println("this email exit already");
+                System.out.println("this email exist already");
             }
         }catch (CouponSystemException e){
             throw new CouponSystemException("addCustomer at AdminFacade",e);
