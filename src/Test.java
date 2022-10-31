@@ -112,7 +112,7 @@ public class Test {
 
 
              } catch (CouponSystemException e) {
-                 throw new RuntimeException(e);
+                 System.out.println(e.getMessage());;
              }finally {
                  couponJob.stopJob();
                  try {

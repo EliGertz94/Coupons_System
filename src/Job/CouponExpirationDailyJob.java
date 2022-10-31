@@ -22,16 +22,16 @@ public class CouponExpirationDailyJob extends Thread {
     @Override
     public void run() {
         LocalDateTime date = LocalDateTime.now();
-        ArrayList<Coupon> coupons = new ArrayList<>();
+      //  ArrayList<Coupon> coupons = new ArrayList<>();
         while (quit) {
             try {
-                coupons.addAll(couponsDAO.getAllCoupons());
-                System.out.println("checking");
-                for (Coupon coupon : coupons) {
-                    if (coupon.getEndDate().compareTo(date) < 0) {
-                        couponsDAO.deleteCoupon(coupon.getId());
-                    }
-                }
+//                coupons.addAll(couponsDAO.getAllCoupons());
+//                for (Coupon coupon : coupons) {
+//                    if (coupon.getEndDate().compareTo(date) < 0) {
+//                        couponsDAO.deleteCoupon(coupon.getId());
+//                    }
+//                }
+                couponsDAO.deleteExpiredCoupons();
                 Thread.sleep(43_200_000); // 12 hours
             } catch (InterruptedException e) {
                 //add custom
@@ -39,7 +39,6 @@ public class CouponExpirationDailyJob extends Thread {
             } catch (CouponSystemException e) {
                 System.out.println("Thread error , please check thread again !");
             }
-
         }
     }
 

@@ -21,4 +21,6 @@ public interface CouponsDAO {
     void deleteCouponPurchase(int customerId , int couponId) throws CouponSystemException;
     boolean doesCustomerPurchaseExist(int customerId, int couponId ) throws CouponSystemException;
 
+    void deleteExpiredCoupons() throws CouponSystemException;
+
 }

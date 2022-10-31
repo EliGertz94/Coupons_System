@@ -14,8 +14,10 @@ public class CompanyFacade extends ClientFacade{
     private int companyId;
 
 
-// how to show exception when getting the object
-    public synchronized boolean logIn(String email, String password) throws CouponSystemException {
+    /**
+     * logIn - return boolean if email and password are correct
+     */
+    public boolean logIn(String email, String password) throws CouponSystemException {
 
         try {
             this.companyId=companiesDAO.companyByLogin(email,password).getId();
@@ -26,41 +28,42 @@ public class CompanyFacade extends ClientFacade{
         }
     }
 
-    //הוספת קופון חדש.
-    //o אין להוסיף קופון בעל כותרת זהה לקופון קיים של אותה החברה. מותר להוסיף קופון
-    //בעל כותרת זהה לקופון של חברה אחרת.
-
-
-
-    public synchronized void addCoupon(Coupon coupon) throws CouponSystemException {
-        coupon.setCompanyId(this.companyId);
-
-        if(!couponsDAO.uniqueTitleByCompany(coupon.getCompanyId(),coupon.getTitle())){
-            couponsDAO.addCoupon(coupon);
-        }else {
-            System.out.println("this title for a coupon exist already");
+    /**
+     * addCoupon - will add a coupon record with unique title
+     */
+    public void addCoupon(Coupon coupon) throws CouponSystemException {
+        if(coupon.getCompanyId() == this.companyId) {
+            if (!couponsDAO.uniqueTitleByCompany(coupon.getCompanyId(), coupon.getTitle())) {
+                couponsDAO.addCoupon(coupon);
+            } else {
+                throw new CouponSystemException("this title for a coupon exist already");
+            }
         }
 
     }
 
-    //עדכון קופון קיים.
-    //o לא ניתן לעדכן את קוד הקופון.
-    // o לא ניתן לעדכן את קוד החברה.
 
-    //should i check validity of coupon ?
     public synchronized void updateCoupon(Coupon coupon) throws CouponSystemException {
 
-        coupon.setCompanyId(this.companyId);
-        couponsDAO.updateCoupon(coupon);
+        if(coupon.getCompanyId() != this.companyId) {
+            throw new CouponSystemException("updateCoupon error at CompanyFacade");
+        }
+            couponsDAO.updateCoupon(coupon);
     }
 
     //מחיקת קופון
     //o יש למחוק בנוסף גם את היסטוריית רכישת הקופון ע"י לקוחות.
-    public synchronized void deleteCoupon(int couponId) throws CouponSystemException {
+    public void deleteCoupon(int couponId) throws CouponSystemException {
+        //check if the coupon id belongs to company
+        ArrayList<Coupon> companyCoupons =  getAllCompanyCoupons();
+        for (Coupon coupon:
+            companyCoupons ) {
+
+        }
         couponsDAO.deleteCoupon(couponId);
     }
 
-    public  synchronized ArrayList<Coupon> getAllCompanyCoupons() throws CouponSystemException {
+    public  ArrayList<Coupon> getAllCompanyCoupons() throws CouponSystemException {
 
         String sql = "select * from coupons WHERE COMPANY_ID = " + this.companyId;
         ArrayList<Coupon> coupons  = new ArrayList<>();

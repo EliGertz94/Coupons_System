@@ -377,5 +377,25 @@ public class CouponsDBDAO implements CouponsDAO {
     }
 
 
+    /**
+     * addCoupon - deleting all the expired coupons
+     * will delete related table records thanks to cascade (mysql business logic)
+     */
+    @Override
+    public void deleteExpiredCoupons()  throws CouponSystemException {
+            String sql = " delete from coupons where END_DATE < now()";
+            Connection con = ConnectionPool.getInstance().getConnection();
+            try {
+                Statement stm = con.createStatement();
+                int rawCount =  stm.executeUpdate(sql);
+                System.out.println("deleteCoupon amount of rows effected "+ rawCount);
+            } catch (SQLException e) {
+                throw new CouponSystemException("deleteExpiredCoupons error at CouponDBDAO");
+            }finally {
+                ConnectionPool.getInstance().restoreConnection(con);
+
+            }
+        }
+
 
 }
