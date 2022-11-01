@@ -68,9 +68,11 @@ public class CustomerFacade  extends ClientFacade {
     }
 
 
-    public synchronized Customer getCustomerDetails() throws CouponSystemException{
+    public  Customer getCustomerDetails() throws CouponSystemException{
         try {
-            return customersDAO.getOneCustomer(this.getCustomerId());
+            Customer customer=  customersDAO.getOneCustomer(this.getCustomerId());
+            customer.setCoupons(customersDAO.getCustomerCoupons(this.getCustomerId()));
+            return customer;
         } catch (CouponSystemException e) {
             throw new CouponSystemException("getCustomerDetails error at CustomerFacade",e);
         }

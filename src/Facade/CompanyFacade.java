@@ -70,12 +70,20 @@ public class CompanyFacade extends ClientFacade{
     }
 
 
-    public synchronized ArrayList<Coupon> getAllCompanyCoupons(double maxPrice) throws CouponSystemException {
+    public  ArrayList<Coupon> getAllCompanyCoupons(double maxPrice) throws CouponSystemException {
         return companiesDAO.getAllCompanyCoupons(maxPrice,this.getCompanyId());
     }
-    public synchronized Company getCompanyDetails( ) throws CouponSystemException {
 
-       return companiesDAO.getOneCompany(this.getCompanyId());
+    /**
+     * getCompanyDetails - returns company details including the coupons of the company
+     */
+    public  Company getCompanyDetails( ) throws CouponSystemException {
+
+       Company company = companiesDAO.getOneCompany(this.getCompanyId());
+
+        company.setCoupons(companiesDAO.getAllCompanyCoupons(this.getCompanyId()));
+
+       return company;
     }
 
 

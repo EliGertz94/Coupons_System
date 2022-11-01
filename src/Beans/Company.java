@@ -56,6 +56,10 @@ public class Company {
         this.password = password;
     }
 
+    public void setCoupons(ArrayList<Coupon> coupons) {
+        this.coupons = coupons;
+    }
+
     @Override
     public String toString() {
         return "Company{" +
