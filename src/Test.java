@@ -5,25 +5,16 @@ import Beans.Customer;
 import ClientLogIn.ClientType;
 import ClientLogIn.LoginManager;
 import ConnectionPoolRelated.ConnectionPool;
-import DAOImplementation.CouponsDBDAO;
 import Exceptions.CouponSystemException;
 import Facade.AdminFacade;
 import Facade.CompanyFacade;
 import Facade.CustomerFacade;
 import Job.CouponExpirationDailyJob;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class Test {
-
-    //א. הפעלת ה-Job היומי.
-    // ב. התחברות ע"י ה-LoginManager כ-Administrator, קבלת אובייקט AdminFacade וקריאה לכל פונקציית
-    //לוגיקה עסקית שלו.
-    // ג. התחברות ע"י ה-LoginManager כ-Company, קבלת אובייקט CompanyFacade וקריאה לכל פונקציית
-    //לוגיקה עסקית שלו.
-    // ד. התחברות ע"י ה-LoginManager כ-Customer, קבלת אובייקט CustomerFacade וקריאה לכל פונקציית
-    //לוגיקה עסקית שלו. ה. הפסקת ה-Job היומי. ו. סגירת כל ה-Connections (קריאה לפונקציה closeAllConnections של ה-ConnectionPool).
-
 
    public static void main(String[] args) {
       testAll();
@@ -60,51 +51,64 @@ public class Test {
 
                   //-------------- CompanyFacade --------------
 
+                 System.out.println("company facade ");
                   CompanyFacade companyFacade = (CompanyFacade) LoginManager.getInstance().logIn("12@gmail.com","1111E006A",ClientType.Company);
 
-
-                 // get a coupon object from a CouponsDBDAO method (shorter that way)
-                 CouponsDBDAO couponsDBDAO = new CouponsDBDAO();
-
-                 int couponId  =33;
-                 Coupon  coupon =  new Coupon();
-                 if(couponsDBDAO.doesCouponExists(couponId)){
-                       coupon = couponsDBDAO.getOneCoupon(couponId);
+                 ArrayList<Coupon> allCompanyCoupons= companyFacade.getAllCompanyCoupons();
+                 System.out.println("getAllCompanyCoupons()");
+                 for(Coupon coupon1 :allCompanyCoupons){
+                     System.out.println(coupon1);
                  }
 
-                 //add a coupon
-                 companyFacade.addCoupon(coupon);
-                 coupon.setDescription("description of coupon");
-                 coupon.setCategory(Category.Food);
+                 ArrayList<Coupon> CompanyCouponsByCategory= companyFacade.getAllCompanyCoupons(Category.Electricity);
+                 System.out.println( " BY CATEGORY "+ CompanyCouponsByCategory);
+                 System.out.println(" company details  "+companyFacade.getCompanyDetails());
 
-                 //update changes
-                 companyFacade.updateCoupon(coupon);
+
+                 Coupon  coupon =  new Coupon
+                         (6, Category.Food, "coupon title", "coupon description", LocalDateTime.now(), LocalDateTime.of(2022,12,12,12,12),
+                 100, 200, "String image");
+
+
+                 // add a coupon
+//                 companyFacade.addCoupon(coupon);
+//
+//                 coupon.setDescription("description of coupon");
+//                 coupon.setCategory(Category.Food);
+//                 coupon.setId(39);
+//                 coupon.setDescription("some other description");
+//
+//                 //update changes
+//                 companyFacade.updateCoupon(coupon);
                  //----delete a coupon by id
                  //will delete purchases as well thanks to - ON DELETE CASCADE SQL
-                // companyFacade.deleteCoupon(30);
+                 // companyFacade.deleteCoupon(30);
                  //----return all the coupons of the company
-                 ArrayList<Coupon> allCompanyCoupons= companyFacade.getAllCompanyCoupons();
-                 ArrayList<Coupon> CompanyCouponsByCategory= companyFacade.getAllCompanyCoupons(Category.Electricity);
-                 ArrayList<Coupon> companyCouponsByMaxPrice=companyFacade.getAllCompanyCoupons(150);
+                 System.out.println("id companyfacade"+ companyFacade.getCompanyId());
+                 //   ArrayList<Coupon> companyCouponsByMaxPrice=companyFacade.getAllCompanyCoupons(150);
                  //get logged in company details
-                 System.out.println(companyFacade.getCompanyDetails());
+
 
                  //----------- customerFacade -----------
 
+                 System.out.println("customerFacade");
                  CustomerFacade customerFacade = (CustomerFacade) LoginManager.getInstance().logIn
                          ("email1@gmail.com","password",ClientType.Customer);
-
                  //purchaseCoupon
                  customerFacade.purchaseCoupon(35);
 
                  //get customer coupons
                  ArrayList<Coupon> customersCoupons = customerFacade.getCustomerCoupons();
-
+                 System.out.println("customersCoupons");
+                 System.out.println(customersCoupons);
                  //get customer coupons by max price
                  ArrayList<Coupon> customerCouponByMaxPrice = customerFacade.getCustomerCoupons(200);
+                 System.out.println("customerCouponByMaxPrice");
+                 System.out.println(customerCouponByMaxPrice);
                  //get customer coupons by Category
                  ArrayList<Coupon> customerCouponByCategory = customerFacade.getCustomerCoupons(Category.Food);
-
+                 System.out.println("customerCouponByCategory");
+                 System.out.println(customerCouponByCategory);
                  //customer details
                  Customer customer1=  customerFacade.getCustomerDetails();
                  System.out.println(customer1);

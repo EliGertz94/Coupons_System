@@ -1,6 +1,8 @@
 package DAO;
 
+import Beans.Category;
 import Beans.Company;
+import Beans.Coupon;
 import Exceptions.CouponSystemException;
 
 import java.net.ConnectException;
@@ -33,5 +35,10 @@ public interface CompaniesDAO {
     Company getOneCompany(int companyId) throws CouponSystemException;
 
     boolean getCompanyByEmail(String companyEmail) throws CouponSystemException;
+
+    ArrayList<Coupon> getAllCompanyCoupons(int companyId) throws CouponSystemException;
+
+     ArrayList<Coupon> getAllCompanyCoupons(Category category , int companyId) throws CouponSystemException;
+    ArrayList<Coupon> getAllCompanyCoupons(double maxPrice,int couponId) throws CouponSystemException;
 
 }

@@ -51,157 +51,27 @@ public class CompanyFacade extends ClientFacade{
             couponsDAO.updateCoupon(coupon);
     }
 
-    //מחיקת קופון
-    //o יש למחוק בנוסף גם את היסטוריית רכישת הקופון ע"י לקוחות.
-    public void deleteCoupon(int couponId) throws CouponSystemException {
-        //check if the coupon id belongs to company
-        ArrayList<Coupon> companyCoupons =  getAllCompanyCoupons();
-        for (Coupon coupon:
-            companyCoupons ) {
 
+    public void deleteCoupon(int couponId) throws CouponSystemException {
+        Coupon companyCoupon =  couponsDAO.getOneCoupon(couponId);
+
+        if(companyCoupon.getCompanyId() != this.getCompanyId()){
+           throw new CouponSystemException("deleteCoupon at CompanyFacade - no permission to delete coupon");
         }
         couponsDAO.deleteCoupon(couponId);
     }
 
     public  ArrayList<Coupon> getAllCompanyCoupons() throws CouponSystemException {
-
-        String sql = "select * from coupons WHERE COMPANY_ID = " + this.companyId;
-        ArrayList<Coupon> coupons  = new ArrayList<>();
-        Connection con = ConnectionPool.getInstance().getConnection();
-        try{
-            Statement stm = con.createStatement();
-            stm.execute(sql);
-            ResultSet resultSet=stm.executeQuery(sql);
-            while (resultSet.next()){
-                Coupon coupon = new Coupon();
-                coupon.setId(resultSet.getInt(1));
-                coupon.setCompanyId(resultSet.getInt(2));
-
-                for (Category category : Category.values()) {
-                    if(category.getCode() == resultSet.getInt(3)){
-                        coupon.setCategory(category);
-                    }
-                }
-                coupon.setTitle(resultSet.getString(4));
-                coupon.setDescription(resultSet.getString(5));
-                Timestamp startTimestamp = new Timestamp(resultSet.getDate(6).getTime());
-                coupon.setStartDate(startTimestamp.toLocalDateTime());
-                Timestamp endTimestamp = new Timestamp(resultSet.getDate(7).getTime());
-                coupon.setEndDate(endTimestamp.toLocalDateTime());
-
-                coupon.setAmount(resultSet.getInt(8));
-                coupon.setPrice(resultSet.getDouble(9));
-                coupon.setImage(resultSet.getString(10));
-                coupons.add(coupon);
-
-            }
-
-            resultSet.close();
-            stm.close();
-            return coupons;
-
-        }catch (SQLException  e) {
-            throw new CouponSystemException("delete exception");
-        }finally {
-            ConnectionPool.getInstance().restoreConnection(con);
-
-        }
-
-
+       return companiesDAO.getAllCompanyCoupons(this.getCompanyId());
     }
 
     public synchronized ArrayList<Coupon> getAllCompanyCoupons(Category category) throws CouponSystemException {
-
-        String sql = "select * from coupons WHERE COMPANY_ID = " + this.companyId+" AND CATEGORY_ID = " +category.getCode();
-        ArrayList<Coupon> coupons  = new ArrayList<>();
-        Connection con = ConnectionPool.getInstance().getConnection();
-        try {
-            Statement stm = con.createStatement();
-            stm.execute(sql);
-            ResultSet resultSet=stm.executeQuery(sql);
-            while (resultSet.next()){
-                Coupon coupon = new Coupon();
-                coupon.setId(resultSet.getInt(1));
-                coupon.setCompanyId(resultSet.getInt(2));
-
-                for (Category category1 : Category.values()) {
-                    if(category1.getCode() == resultSet.getInt(3)){
-                        coupon.setCategory(category1);
-                    }
-                }
-                coupon.setTitle(resultSet.getString(4));
-                coupon.setDescription(resultSet.getString(5));
-                Timestamp startTimestamp = new Timestamp(resultSet.getDate(6).getTime());
-                coupon.setStartDate(startTimestamp.toLocalDateTime());
-                Timestamp endTimestamp = new Timestamp(resultSet.getDate(7).getTime());
-                coupon.setEndDate(endTimestamp.toLocalDateTime());
-
-                coupon.setAmount(resultSet.getInt(8));
-                coupon.setPrice(resultSet.getDouble(9));
-                coupon.setImage(resultSet.getString(10));
-                coupons.add(coupon);
-
-            }
-
-            resultSet.close();
-            stm.close();
-            return coupons;
-
-        }catch (SQLException  e) {
-            throw new CouponSystemException("delete exception");
-        }finally {
-            ConnectionPool.getInstance().restoreConnection(con);
-
-        }
-
-
+        return companiesDAO.getAllCompanyCoupons(category,this.getCompanyId());
     }
 
 
     public synchronized ArrayList<Coupon> getAllCompanyCoupons(double maxPrice) throws CouponSystemException {
-        String sql = "select * from coupons WHERE COMPANY_ID = " + this.companyId+" AND PRICE <= " +maxPrice;
-        ArrayList<Coupon> coupons  = new ArrayList<>();
-        Connection con = ConnectionPool.getInstance().getConnection();
-        try {
-            Statement stm = con.createStatement();
-            stm.execute(sql);
-            ResultSet resultSet=stm.executeQuery(sql);
-            while (resultSet.next()){
-                Coupon coupon = new Coupon();
-                coupon.setId(resultSet.getInt(1));
-                coupon.setCompanyId(resultSet.getInt(2));
-
-                for (Category category1 : Category.values()) {
-                    if(category1.getCode() == resultSet.getInt(3)){
-                        coupon.setCategory(category1);
-                    }
-                }
-                coupon.setTitle(resultSet.getString(4));
-                coupon.setDescription(resultSet.getString(5));
-                Timestamp startTimestamp = new Timestamp(resultSet.getDate(6).getTime());
-                coupon.setStartDate(startTimestamp.toLocalDateTime());
-                Timestamp endTimestamp = new Timestamp(resultSet.getDate(7).getTime());
-                coupon.setEndDate(endTimestamp.toLocalDateTime());
-
-                coupon.setAmount(resultSet.getInt(8));
-                coupon.setPrice(resultSet.getDouble(9));
-                coupon.setImage(resultSet.getString(10));
-                coupons.add(coupon);
-
-            }
-
-            resultSet.close();
-            stm.close();
-            return coupons;
-
-        }catch (SQLException  e) {
-            throw new CouponSystemException("max price");
-        }finally {
-            ConnectionPool.getInstance().restoreConnection(con);
-
-        }
-
-
+        return companiesDAO.getAllCompanyCoupons(maxPrice,this.getCompanyId());
     }
     public synchronized Company getCompanyDetails( ) throws CouponSystemException {
 

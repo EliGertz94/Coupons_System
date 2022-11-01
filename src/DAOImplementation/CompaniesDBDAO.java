@@ -1,6 +1,8 @@
 package DAOImplementation;
 
+import Beans.Category;
 import Beans.Company;
+import Beans.Coupon;
 import ConnectionPoolRelated.ConnectionPool;
 import DAO.CompaniesDAO;
 import Exceptions.CouponSystemException;
@@ -306,6 +308,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
     /**
      * getCompanyByName - returns true/false if a company with a given companyEmail exist
      */
+    @Override
     public synchronized boolean getCompanyByEmail(String companyEmail) throws CouponSystemException {
 
         String sql = "select * from company where email = '"
@@ -333,4 +336,143 @@ public class CompaniesDBDAO implements CompaniesDAO {
 
     }
 
-}
+
+
+    @Override
+    public  ArrayList<Coupon> getAllCompanyCoupons(int companyId) throws CouponSystemException {
+
+        String sql = "select * from coupons WHERE COMPANY_ID = " + companyId;
+        ArrayList<Coupon> coupons  = new ArrayList<>();
+        Connection con = ConnectionPool.getInstance().getConnection();
+        try{
+            Statement stm = con.createStatement();
+            stm.execute(sql);
+            ResultSet resultSet=stm.executeQuery(sql);
+            while (resultSet.next()){
+                Coupon coupon = new Coupon();
+                coupon.setId(resultSet.getInt(1));
+                coupon.setCompanyId(resultSet.getInt(2));
+
+                for (Category category : Category.values()) {
+                    if(category.getCode() == resultSet.getInt(3)){
+                        coupon.setCategory(category);
+                    }
+                }
+                coupon.setTitle(resultSet.getString(4));
+                coupon.setDescription(resultSet.getString(5));
+                Timestamp startTimestamp = new Timestamp(resultSet.getDate(6).getTime());
+                coupon.setStartDate(startTimestamp.toLocalDateTime());
+                Timestamp endTimestamp = new Timestamp(resultSet.getDate(7).getTime());
+                coupon.setEndDate(endTimestamp.toLocalDateTime());
+
+                coupon.setAmount(resultSet.getInt(8));
+                coupon.setPrice(resultSet.getDouble(9));
+                coupon.setImage(resultSet.getString(10));
+                coupons.add(coupon);
+
+            }
+            resultSet.close();
+            stm.close();
+            return coupons;
+
+        }catch (SQLException  e) {
+            throw new CouponSystemException("delete exception");
+        }finally {
+            ConnectionPool.getInstance().restoreConnection(con);
+
+        }
+
+
+    }
+
+    @Override
+    public  ArrayList<Coupon> getAllCompanyCoupons(Category category , int companyId) throws CouponSystemException {
+
+        String sql = "select * from coupons WHERE COMPANY_ID = " + companyId + " AND CATEGORY_ID = " + category.getCode();
+        ArrayList<Coupon> coupons = new ArrayList<>();
+        Connection con = ConnectionPool.getInstance().getConnection();
+        try {
+            Statement stm = con.createStatement();
+            stm.execute(sql);
+            ResultSet resultSet = stm.executeQuery(sql);
+            while (resultSet.next()) {
+                Coupon coupon = new Coupon();
+                coupon.setId(resultSet.getInt(1));
+                coupon.setCompanyId(resultSet.getInt(2));
+
+                for (Category category1 : Category.values()) {
+                    if (category1.getCode() == resultSet.getInt(3)) {
+                        coupon.setCategory(category1);
+                    }
+                }
+                coupon.setTitle(resultSet.getString(4));
+                coupon.setDescription(resultSet.getString(5));
+                Timestamp startTimestamp = new Timestamp(resultSet.getDate(6).getTime());
+                coupon.setStartDate(startTimestamp.toLocalDateTime());
+                Timestamp endTimestamp = new Timestamp(resultSet.getDate(7).getTime());
+                coupon.setEndDate(endTimestamp.toLocalDateTime());
+
+                coupon.setAmount(resultSet.getInt(8));
+                coupon.setPrice(resultSet.getDouble(9));
+                coupon.setImage(resultSet.getString(10));
+                coupons.add(coupon);
+
+            }
+
+            resultSet.close();
+            stm.close();
+            return coupons;
+
+        } catch (SQLException e) {
+            throw new CouponSystemException("delete exception");
+        } finally {
+            ConnectionPool.getInstance().restoreConnection(con);
+
+        }
+    }
+
+    public  ArrayList<Coupon> getAllCompanyCoupons(double maxPrice,int couponId) throws CouponSystemException {
+        String sql = "select * from coupons WHERE COMPANY_ID = " + couponId + " AND PRICE <= " + maxPrice;
+        ArrayList<Coupon> coupons = new ArrayList<>();
+        Connection con = ConnectionPool.getInstance().getConnection();
+        try {
+            Statement stm = con.createStatement();
+            stm.execute(sql);
+            ResultSet resultSet = stm.executeQuery(sql);
+            while (resultSet.next()) {
+                Coupon coupon = new Coupon();
+                coupon.setId(resultSet.getInt(1));
+                coupon.setCompanyId(resultSet.getInt(2));
+
+                for (Category category1 : Category.values()) {
+                    if (category1.getCode() == resultSet.getInt(3)) {
+                        coupon.setCategory(category1);
+                    }
+                }
+                coupon.setTitle(resultSet.getString(4));
+                coupon.setDescription(resultSet.getString(5));
+                Timestamp startTimestamp = new Timestamp(resultSet.getDate(6).getTime());
+                coupon.setStartDate(startTimestamp.toLocalDateTime());
+                Timestamp endTimestamp = new Timestamp(resultSet.getDate(7).getTime());
+                coupon.setEndDate(endTimestamp.toLocalDateTime());
+
+                coupon.setAmount(resultSet.getInt(8));
+                coupon.setPrice(resultSet.getDouble(9));
+                coupon.setImage(resultSet.getString(10));
+                coupons.add(coupon);
+
+            }
+
+            resultSet.close();
+            stm.close();
+            return coupons;
+
+        } catch (SQLException e) {
+            throw new CouponSystemException("max price");
+        } finally {
+            ConnectionPool.getInstance().restoreConnection(con);
+
+        }
+
+    }
+    }

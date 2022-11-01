@@ -54,152 +54,17 @@ public class CustomerFacade  extends ClientFacade {
     }
 
 
-    public synchronized ArrayList<Coupon> getCustomerCoupons() throws CouponSystemException {
-
-        String sql = "select * from coupons where coupons.id  in " +
-                "(select COUPON_ID from CUSTOMERS_VS_COUPONS" +
-                " where CUSTOMER_ID =" + this.customerId + ")";
-        ArrayList<Coupon> coupons = new ArrayList<>();
-        Connection con = ConnectionPool.getInstance().getConnection();
-        try  {
-            Statement stm = con.createStatement();
-            stm.execute(sql);
-            ResultSet resultSet = stm.executeQuery(sql);
-            while (resultSet.next()) {
-                Coupon coupon = new Coupon();
-                coupon.setId(resultSet.getInt(1));
-                coupon.setCompanyId(resultSet.getInt(2));
-
-                for (Category category : Category.values()) {
-                    if (category.getCode() == resultSet.getInt(3)) {
-                        coupon.setCategory(category);
-                    }
-                }
-                coupon.setTitle(resultSet.getString(4));
-                coupon.setDescription(resultSet.getString(5));
-                Timestamp startTimestamp = new Timestamp(resultSet.getDate(6).getTime());
-                coupon.setStartDate(startTimestamp.toLocalDateTime());
-                Timestamp endTimestamp = new Timestamp(resultSet.getDate(7).getTime());
-                coupon.setEndDate(endTimestamp.toLocalDateTime());
-
-                coupon.setAmount(resultSet.getInt(8));
-                coupon.setPrice(resultSet.getDouble(9));
-                coupon.setImage(resultSet.getString(10));
-                coupons.add(coupon);
-
-            }
-
-            resultSet.close();
-            stm.close();
-            return coupons;
-
-
-        }catch (SQLException e ){
-            throw new CouponSystemException("getCustomerCoupons on Customer Facade");
-        }finally {
-            ConnectionPool.getInstance().restoreConnection(con);
-
-        }
+    public  ArrayList<Coupon> getCustomerCoupons() throws CouponSystemException {
+         return customersDAO.getCustomerCoupons(this.getCustomerId());
     }
 
-    public synchronized ArrayList<Coupon> getCustomerCoupons(double maxPrice) throws CouponSystemException {
 
-
-        String sql = "select * from coupons where coupons.id  in " +
-                "(select COUPON_ID from CUSTOMERS_VS_COUPONS" +
-                " where CUSTOMER_ID =" + this.customerId + ")  AND coupons.PRICE <= "+maxPrice;
-        ArrayList<Coupon> coupons = new ArrayList<>();
-        Connection con = ConnectionPool.getInstance().getConnection();
-        try {
-            Statement stm = con.createStatement();
-            stm.execute(sql);
-            ResultSet resultSet = stm.executeQuery(sql);
-            while (resultSet.next()) {
-                Coupon coupon = new Coupon();
-                coupon.setId(resultSet.getInt(1));
-                coupon.setCompanyId(resultSet.getInt(2));
-
-                for (Category category : Category.values()) {
-                    if (category.getCode() == resultSet.getInt(3)) {
-                        coupon.setCategory(category);
-                    }
-                }
-                coupon.setTitle(resultSet.getString(4));
-                coupon.setDescription(resultSet.getString(5));
-                Timestamp startTimestamp = new Timestamp(resultSet.getDate(6).getTime());
-                coupon.setStartDate(startTimestamp.toLocalDateTime());
-                Timestamp endTimestamp = new Timestamp(resultSet.getDate(7).getTime());
-                coupon.setEndDate(endTimestamp.toLocalDateTime());
-
-                coupon.setAmount(resultSet.getInt(8));
-                coupon.setPrice(resultSet.getDouble(9));
-                coupon.setImage(resultSet.getString(10));
-                coupons.add(coupon);
-
-            }
-
-            resultSet.close();
-            stm.close();
-            return coupons;
-
-
-        }catch(SQLException e){
-            throw new CouponSystemException("getCustomerCoupons max price at Customer Facade");
-        }finally {
-            ConnectionPool.getInstance().restoreConnection(con);
-
-        }
-
+    public  ArrayList<Coupon> getCustomerCoupons(double maxPrice) throws CouponSystemException {
+        return customersDAO.getCustomerCoupons(maxPrice,this.getCustomerId());
     }
 
     public synchronized ArrayList<Coupon> getCustomerCoupons(Category couponCategory) throws CouponSystemException {
-
-
-        String sql = "select * from coupons where coupons.id  in " +
-                "(select COUPON_ID from CUSTOMERS_VS_COUPONS" +
-                " where CUSTOMER_ID =" + this.customerId + ")  AND coupons.CATEGORY_ID= "+couponCategory.getCode();
-        ArrayList<Coupon> coupons = new ArrayList<>();
-        Connection con = ConnectionPool.getInstance().getConnection();
-        try  {
-            Statement stm = con.createStatement();
-            stm.execute(sql);
-            ResultSet resultSet = stm.executeQuery(sql);
-            while (resultSet.next()) {
-                Coupon coupon = new Coupon();
-                coupon.setId(resultSet.getInt(1));
-                coupon.setCompanyId(resultSet.getInt(2));
-
-                for (Category category : Category.values()) {
-                    if (category.getCode() == resultSet.getInt(3)) {
-                        coupon.setCategory(category);
-                    }
-                }
-                coupon.setTitle(resultSet.getString(4));
-                coupon.setDescription(resultSet.getString(5));
-                Timestamp startTimestamp = new Timestamp(resultSet.getDate(6).getTime());
-                coupon.setStartDate(startTimestamp.toLocalDateTime());
-                Timestamp endTimestamp = new Timestamp(resultSet.getDate(7).getTime());
-                coupon.setEndDate(endTimestamp.toLocalDateTime());
-
-                coupon.setAmount(resultSet.getInt(8));
-                coupon.setPrice(resultSet.getDouble(9));
-                coupon.setImage(resultSet.getString(10));
-                coupons.add(coupon);
-
-            }
-
-            resultSet.close();
-            stm.close();
-            return coupons;
-
-
-        }catch (SQLException e){
-            throw new CouponSystemException("getCustomerCoupons by category ");
-        }finally {
-            ConnectionPool.getInstance().restoreConnection(con);
-
-        }
-
+        return customersDAO.getCustomerCoupons(couponCategory,this.getCustomerId());
     }
 
 

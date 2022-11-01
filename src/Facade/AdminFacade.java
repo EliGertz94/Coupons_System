@@ -2,14 +2,9 @@ package Facade;
 
 import Beans.Company;
 import Beans.Customer;
-import DAO.CompaniesDAO;
-import DAO.CouponsDAO;
-import DAO.CustomersDAO;
-import DAOImplementation.CompaniesDBDAO;
+
 import Exceptions.CouponSystemException;
 
-import java.net.ConnectException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class AdminFacade extends ClientFacade {
