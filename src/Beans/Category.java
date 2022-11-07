@@ -1,5 +1,8 @@
 package Beans;
 
+/**
+ * Category enum - the categories used as the field for the coupon
+ */
 public enum Category {
 
     Food("Food",1),

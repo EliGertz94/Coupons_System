@@ -17,6 +17,9 @@ public class CustomerFacade  extends ClientFacade {
 
     private int customerId;
 
+    /**
+     * logIn - get customer id field
+     */
     public synchronized Customer logIn(String email, String password) {
 
         Customer customer= null;
@@ -37,6 +40,11 @@ public class CustomerFacade  extends ClientFacade {
     //o לא ניתן לרכוש את הקופון אם הכמות שלו היא 0.V
         //o לא ניתן לרכוש את הקופון אם תאריך התפוגה שלו כבר הגיע.
         //o לאחר הרכישה יש להוריד את הכמות במלאי של הקופון ב-1.
+    /**
+     * purchaseCoupon - will allow the purchase if and only if the coupon
+     * wasn't purchased already by this client
+     * also will check if coupon is not expired by endDate or by the available amount
+     */
         public synchronized void purchaseCoupon(int couponId) throws CouponSystemException {
             if(!couponsDAO.doesCustomerPurchaseExist(this.customerId,couponId)){
 
@@ -45,10 +53,11 @@ public class CustomerFacade  extends ClientFacade {
 
                     couponsDAO.addCouponPurchase(this.customerId, couponId);
                 }else{
-                   // System.out.println("dfsdfsdf");
+                    System.out.println("can't purchase this coupon expired ");
+
                 }
             }else{
-                System.out.println("already purchase this coupon");
+                System.out.println("you already have this coupon ");
             }
 
     }
@@ -78,6 +87,9 @@ public class CustomerFacade  extends ClientFacade {
         }
 
     }
+    /**
+     * getCustomerId - get customer id field
+     */
 
     public int getCustomerId() {
         return customerId;
