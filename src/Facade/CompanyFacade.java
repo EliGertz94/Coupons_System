@@ -16,13 +16,14 @@ public class CompanyFacade extends ClientFacade{
 
     /**
      * logIn - return boolean if email and password are correct
+     * will instantiate  the companyId field
      */
     public boolean logIn(String email, String password) throws CouponSystemException {
 
         try {
             this.companyId=companiesDAO.companyByLogin(email,password).getId();
-        boolean result  =   companiesDAO.isCompanyExists(email,password);
-            return result;
+            return  companiesDAO.isCompanyExists(email,password);
+
         } catch (CouponSystemException e) {
            throw new CouponSystemException("logIn at CompanyFacade",e);
         }
@@ -38,11 +39,15 @@ public class CompanyFacade extends ClientFacade{
             } else {
                 throw new CouponSystemException("this title for a coupon exist already");
             }
+        }else {
+            System.out.println("not your company id");
         }
 
     }
 
-
+    /**
+     * addCoupon - will add a coupon record with unique title
+     */
     public synchronized void updateCoupon(Coupon coupon) throws CouponSystemException {
 
         if(coupon.getCompanyId() != this.companyId) {
@@ -51,7 +56,9 @@ public class CompanyFacade extends ClientFacade{
             couponsDAO.updateCoupon(coupon);
     }
 
-
+    /**
+     * deleteCoupon - delete coupon by couponId if belongs to company by companyId
+     */
     public void deleteCoupon(int couponId) throws CouponSystemException {
         Coupon companyCoupon =  couponsDAO.getOneCoupon(couponId);
 
@@ -86,8 +93,10 @@ public class CompanyFacade extends ClientFacade{
        return company;
     }
 
-
-        public int getCompanyId() {
+    /**
+     * getCompanyId - get company id field
+     */
+    public int getCompanyId() {
         return companyId;
     }
 }

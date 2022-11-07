@@ -34,11 +34,13 @@ public class CompaniesDBDAO implements CompaniesDAO {
            boolean result  =resultSet.next();
             resultSet.close();
             stm.close();
-            ConnectionPool.getInstance().restoreConnection(con);
             return result ;
 
         } catch (SQLException e) {
             throw new CouponSystemException("isCompanyExists sql excepting at companyDBDAO",e);
+        }finally {
+            ConnectionPool.getInstance().restoreConnection(con);
+
         }
 
 
@@ -337,7 +339,9 @@ public class CompaniesDBDAO implements CompaniesDAO {
     }
 
 
-
+    /**
+     * getAllCompanyCoupons - get a list of all the coupons according to companyId
+     */
     @Override
     public  ArrayList<Coupon> getAllCompanyCoupons(int companyId) throws CouponSystemException {
 
@@ -385,6 +389,9 @@ public class CompaniesDBDAO implements CompaniesDAO {
 
     }
 
+    /**
+     * getAllCompanyCoupons - get a list of all the coupons according to companyId and category
+     */
     @Override
     public  ArrayList<Coupon> getAllCompanyCoupons(Category category , int companyId) throws CouponSystemException {
 
@@ -424,13 +431,16 @@ public class CompaniesDBDAO implements CompaniesDAO {
             return coupons;
 
         } catch (SQLException e) {
-            throw new CouponSystemException("delete exception");
+            throw new CouponSystemException("getAllCompanyCoupons exception on CompanyDBDAO");
         } finally {
             ConnectionPool.getInstance().restoreConnection(con);
 
         }
     }
 
+    /**
+     * getAllCompanyCoupons - get a list of all the coupons according to companyId  and till a maxPrice
+     */
     public  ArrayList<Coupon> getAllCompanyCoupons(double maxPrice,int couponId) throws CouponSystemException {
         String sql = "select * from coupons WHERE COMPANY_ID = " + couponId + " AND PRICE <= " + maxPrice;
         ArrayList<Coupon> coupons = new ArrayList<>();

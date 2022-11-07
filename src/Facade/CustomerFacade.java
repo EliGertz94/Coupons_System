@@ -18,28 +18,26 @@ public class CustomerFacade  extends ClientFacade {
     private int customerId;
 
     /**
-     * logIn - get customer id field
+     * logIn - returns boolean according to login status
+     * will instantiate  the customerId field
      */
-    public synchronized Customer logIn(String email, String password) {
+    public  boolean logIn(String email, String password) {
 
-        Customer customer= null;
         try {
-            customer = customersDAO.isCustomerExists(email, password);
+            customerId =customersDAO.customerByLogIn(email,password).getId();
+
+            return customersDAO.isCustomerExists(email, password);
+
         } catch (CouponSystemException e) {
             throw new RuntimeException(e);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        customerId =customer.getId();
-        return customer;
 
     }
 
 
-    //o לא ניתן לרכוש את אותו הקופון יותר מפעם אחת.V
-    //o לא ניתן לרכוש את הקופון אם הכמות שלו היא 0.V
-        //o לא ניתן לרכוש את הקופון אם תאריך התפוגה שלו כבר הגיע.
-        //o לאחר הרכישה יש להוריד את הכמות במלאי של הקופון ב-1.
+
     /**
      * purchaseCoupon - will allow the purchase if and only if the coupon
      * wasn't purchased already by this client
@@ -63,20 +61,32 @@ public class CustomerFacade  extends ClientFacade {
     }
 
 
+    /**
+     * getCustomerCoupons - get the coupons of the customer by the customerId
+     */
     public  ArrayList<Coupon> getCustomerCoupons() throws CouponSystemException {
          return customersDAO.getCustomerCoupons(this.getCustomerId());
     }
 
 
+    /**
+     * getCustomerCoupons - get the coupons of the customer by the customerId and macPrice
+     */
     public  ArrayList<Coupon> getCustomerCoupons(double maxPrice) throws CouponSystemException {
         return customersDAO.getCustomerCoupons(maxPrice,this.getCustomerId());
     }
 
+    /**
+     * getCustomerCoupons - get the coupons of the customer by the customerId and category
+     */
     public synchronized ArrayList<Coupon> getCustomerCoupons(Category couponCategory) throws CouponSystemException {
         return customersDAO.getCustomerCoupons(couponCategory,this.getCustomerId());
     }
 
-
+    /**
+     * getCustomerDetails - returns an object of a customer according to the logged in id
+     * adding all the coupons of the customer to the list of the object
+     */
     public  Customer getCustomerDetails() throws CouponSystemException{
         try {
             Customer customer=  customersDAO.getOneCustomer(this.getCustomerId());

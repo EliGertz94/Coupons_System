@@ -18,7 +18,43 @@ public class CustomersDBDAO implements CustomersDAO {
      * isCustomerExists - return a customer object based on the login details
      */
     @Override
-    public synchronized Customer isCustomerExists(String email, String password) throws CouponSystemException {
+    public synchronized boolean isCustomerExists(String email, String password) throws CouponSystemException {
+
+        String sql = "select * from customer where email = '" +
+                email + "'" + " AND password = '" + password + "'";
+
+        Connection con = ConnectionPool.getInstance().getConnection();
+        try {
+            Statement stm = con.createStatement();
+
+            stm.execute(sql);
+            ResultSet resultSet = stm.executeQuery(sql);
+           // Customer customer = new Customer();
+//            if( resultSet.next()) {
+//                customer.setId(resultSet.getInt(1));
+//                customer.setFirstName(resultSet.getString(2));
+//                customer.setLastName(resultSet.getString(3));
+//
+//                customer.setEmail(resultSet.getString(4));
+//                customer.setPassword(resultSet.getString(5));
+//                resultSet.close();
+//                stm.close();
+//            }
+
+            boolean result = resultSet.next();
+            resultSet.close();
+            stm.close();
+            return result ;
+
+        } catch (SQLException e) {
+            throw new CouponSystemException("isCustomerExists error at CustomerDBDAO",e);
+        }finally {
+
+            ConnectionPool.getInstance().restoreConnection(con);
+        }
+    }
+
+    public  Customer customerByLogIn(String email, String password) throws CouponSystemException {
 
         String sql = "select * from customer where email = '" +
                 email + "'" + " AND password = '" + password + "'";
@@ -40,10 +76,11 @@ public class CustomersDBDAO implements CustomersDAO {
                 resultSet.close();
                 stm.close();
             }
-            return customer;
+
+            return customer ;
 
         } catch (SQLException e) {
-            throw new CouponSystemException("isCustomerExists error at CustomerDBDAO",e);
+            throw new CouponSystemException("customerByLogIn error at CustomerDBDAO",e);
         }finally {
 
             ConnectionPool.getInstance().restoreConnection(con);
@@ -244,6 +281,9 @@ public class CustomersDBDAO implements CustomersDAO {
 
     }
 
+    /**
+     * getCustomerCoupons -  get all the coupons of a customer by his id
+     */
     @Override
     public ArrayList<Coupon> getCustomerCoupons(int customerId) throws CouponSystemException {
 
@@ -292,7 +332,9 @@ public class CustomersDBDAO implements CustomersDAO {
 
         }
     }
-
+    /**
+     * getCustomerCoupons -  get all the coupons of a customer by his id till a maxprice
+     */
     @Override
     public  ArrayList<Coupon> getCustomerCoupons(double maxPrice,int customerId) throws CouponSystemException {
 
@@ -344,6 +386,9 @@ public class CustomersDBDAO implements CustomersDAO {
 
     }
 
+    /**
+     * getCustomerCoupons -  get all the coupons of a customer by his id  according to a category
+     */
     public  ArrayList<Coupon> getCustomerCoupons(Category couponCategory,int customerId) throws CouponSystemException {
 
 

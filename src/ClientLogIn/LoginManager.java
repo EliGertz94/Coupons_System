@@ -35,11 +35,10 @@ public class LoginManager {
                   //   }
                  }
 
-
                 break;
             case Customer:
                 CustomerFacade customerFacade= new CustomerFacade();
-                    if(customerFacade.logIn(email,password).getEmail()!= null){
+                    if(customerFacade.logIn(email,password)){
                         return customerFacade;
                     }
                 break;

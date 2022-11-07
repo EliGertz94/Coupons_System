@@ -7,6 +7,7 @@ import DAO.CustomersDAO;
 import DAOImplementation.CompaniesDBDAO;
 import DAOImplementation.CouponsDBDAO;
 import DAOImplementation.CustomersDBDAO;
+import Exceptions.CouponSystemException;
 
 public abstract class ClientFacade {
 
@@ -18,7 +19,8 @@ public abstract class ClientFacade {
     protected    CouponsDAO couponsDAO = new CouponsDBDAO();
     protected    CustomersDAO customersDAO=  new CustomersDBDAO();
 
-    //initiat with interface and put everything on interface
-
-    //public abstract boolean logIn(String email, String password);
+    /**
+     * logIn -abstract method returns true/false if login is correct
+     */
+    public abstract boolean logIn(String email, String password) throws CouponSystemException;
 }
