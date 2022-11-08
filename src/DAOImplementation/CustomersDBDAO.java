@@ -1,21 +1,21 @@
 package DAOImplementation;
 
 import Beans.Category;
-import Beans.Company;
+
 import Beans.Coupon;
 import Beans.Customer;
 import ConnectionPoolRelated.ConnectionPool;
 import DAO.CustomersDAO;
 import Exceptions.CouponSystemException;
 
-import java.net.ConnectException;
+
 import java.sql.*;
 import java.util.ArrayList;
 
 public class CustomersDBDAO implements CustomersDAO {
 
     /**
-     * isCustomerExists - return a customer object based on the login details
+     * isCustomerExists - return boolean according to the login details
      */
     @Override
     public synchronized boolean isCustomerExists(String email, String password) throws CouponSystemException {
@@ -29,18 +29,6 @@ public class CustomersDBDAO implements CustomersDAO {
 
             stm.execute(sql);
             ResultSet resultSet = stm.executeQuery(sql);
-           // Customer customer = new Customer();
-//            if( resultSet.next()) {
-//                customer.setId(resultSet.getInt(1));
-//                customer.setFirstName(resultSet.getString(2));
-//                customer.setLastName(resultSet.getString(3));
-//
-//                customer.setEmail(resultSet.getString(4));
-//                customer.setPassword(resultSet.getString(5));
-//                resultSet.close();
-//                stm.close();
-//            }
-
             boolean result = resultSet.next();
             resultSet.close();
             stm.close();

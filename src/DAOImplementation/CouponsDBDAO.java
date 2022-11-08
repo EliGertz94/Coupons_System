@@ -1,9 +1,9 @@
 package DAOImplementation;
 
 import Beans.Category;
-import Beans.Company;
+
 import Beans.Coupon;
-import Beans.Customer;
+
 import ConnectionPoolRelated.ConnectionPool;
 import DAO.CouponsDAO;
 import Exceptions.CouponSystemException;
@@ -270,7 +270,6 @@ public class CouponsDBDAO implements CouponsDAO {
             Coupon coupon = getOneCoupon(couponId);
             changeCouponAmount(couponId,coupon.getAmount()-1);
 
-            ConnectionPool.getInstance().restoreConnection(con);
 
         } catch (SQLException e) {
             throw new CouponSystemException("addCouponPurchase error at CouponDBDAO ",e);

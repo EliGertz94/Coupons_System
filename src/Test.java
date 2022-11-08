@@ -121,6 +121,7 @@ public class Test {
                  couponJob.stopJob();
                  try {
                      ConnectionPool.getInstance().closeAllConnections();
+                     System.out.println("reached close all");
                  } catch (CouponSystemException e) {
                      throw new RuntimeException(e);
                  }

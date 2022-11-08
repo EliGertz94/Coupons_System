@@ -9,12 +9,13 @@ import DAOImplementation.CouponsDBDAO;
 import DAOImplementation.CustomersDBDAO;
 import Exceptions.CouponSystemException;
 
+/**
+ * ClientFacade -abstract class containing all the DAO Class instances
+ */
 public abstract class ClientFacade {
 
 
-    /**
-     * ClientFacade -abstract class containing all the DAO Class instances
-     */
+
     protected    CompaniesDAO companiesDAO = new CompaniesDBDAO();
     protected    CouponsDAO couponsDAO = new CouponsDBDAO();
     protected    CustomersDAO customersDAO=  new CustomersDBDAO();

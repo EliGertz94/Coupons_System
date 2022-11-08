@@ -7,11 +7,9 @@ import ConnectionPoolRelated.ConnectionPool;
 import DAO.CompaniesDAO;
 import Exceptions.CouponSystemException;
 
-import java.awt.print.Book;
-import java.net.ConnectException;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.List;
+
 
 public class CompaniesDBDAO implements CompaniesDAO {
 

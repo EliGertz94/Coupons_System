@@ -47,7 +47,6 @@ public class ConnectionPool {
         }
         while (this.connections.isEmpty()) {
             try {
-                System.out.println("waiting get ");
                 wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -71,7 +70,7 @@ public class ConnectionPool {
         while (this.connections.size() < MAX_CONNECTIONS) {
             try {
                 wait();
-
+                System.out.println("waiting to close");
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

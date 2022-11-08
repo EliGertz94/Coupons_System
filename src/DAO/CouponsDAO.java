@@ -5,6 +5,12 @@ import Exceptions.CouponSystemException;
 
 import java.util.ArrayList;
 
+/**
+ * A Coupon DAO (data access object) for CRUD
+ *
+ *
+ * */
+
 public interface CouponsDAO {
 
     boolean doesCouponExists(int couponId) throws CouponSystemException;

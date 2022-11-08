@@ -68,6 +68,9 @@ public class CompanyFacade extends ClientFacade{
         couponsDAO.deleteCoupon(couponId);
     }
 
+    /**
+     * getAllCompanyCoupons -
+     */
     public  ArrayList<Coupon> getAllCompanyCoupons() throws CouponSystemException {
        return companiesDAO.getAllCompanyCoupons(this.getCompanyId());
     }
