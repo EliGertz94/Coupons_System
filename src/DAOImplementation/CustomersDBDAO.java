@@ -18,7 +18,7 @@ public class CustomersDBDAO implements CustomersDAO {
      * isCustomerExists - return boolean according to the login details
      */
     @Override
-    public synchronized boolean isCustomerExists(String email, String password) throws CouponSystemException {
+    public  boolean isCustomerExists(String email, String password) throws CouponSystemException {
 
         String sql = "select * from customer where email = '" +
                 email + "'" + " AND password = '" + password + "'";
@@ -80,7 +80,7 @@ public class CustomersDBDAO implements CustomersDAO {
      * returns the id of a generated record
      */
     @Override
-    public synchronized int addCustomer(Customer customer) throws CouponSystemException {
+    public  int addCustomer(Customer customer) throws CouponSystemException {
 
         String SQL = "insert into customer(FIRST_NAME,LAST_NAME,email,password) values(?,?,?,?)";
 
@@ -115,7 +115,7 @@ public class CustomersDBDAO implements CustomersDAO {
      * updateCustomer -update a customer record
      */
     @Override
-    public synchronized void updateCustomer(Customer customer) throws  CouponSystemException {
+    public  void updateCustomer(Customer customer) throws  CouponSystemException {
         String sql = "UPDATE customer SET FIRST_NAME = ?,LAST_NAME = ?, email = ?, password=? WHERE id = ?";
         Connection con = ConnectionPool.getInstance().getConnection();
         try{
@@ -142,7 +142,7 @@ public class CustomersDBDAO implements CustomersDAO {
      * deleteCustomer - delete a customer by customerId
      */
     @Override
-    public synchronized void deleteCustomer(int customerId) throws CouponSystemException {
+    public  void deleteCustomer(int customerId) throws CouponSystemException {
         String sql = "delete from customer where id  = " + customerId;
         Connection con = ConnectionPool.getInstance().getConnection();
         try {
@@ -170,7 +170,7 @@ public class CustomersDBDAO implements CustomersDAO {
      * getAllCustomers - returns a arrayList of type Customer
      */
     @Override
-    public synchronized ArrayList<Customer> getAllCustomers() throws CouponSystemException {
+    public  ArrayList<Customer> getAllCustomers() throws CouponSystemException {
 
         String sql = "select * from customer";
         ArrayList<Customer> customers  = new ArrayList<>();
@@ -206,7 +206,7 @@ public class CustomersDBDAO implements CustomersDAO {
      * getOneCustomer - returns a customer object by customerId
      */
     @Override
-    public synchronized Customer getOneCustomer(int customerId) throws CouponSystemException {
+    public  Customer getOneCustomer(int customerId) throws CouponSystemException {
 
         String sql = "select * from customer where id = "+ customerId;
         Connection con = ConnectionPool.getInstance().getConnection();
@@ -240,7 +240,7 @@ public class CustomersDBDAO implements CustomersDAO {
      * getCustomerByEmail -  returns true/false if customer exist with given email
      */
     @Override
-    public synchronized boolean getCustomerByEmail(String customerEmail) throws CouponSystemException {
+    public  boolean getCustomerByEmail(String customerEmail) throws CouponSystemException {
 
         String sql = "select * from customer where email = '"+ customerEmail.replaceAll(" ", "")+"'";
         Connection con = ConnectionPool.getInstance().getConnection();

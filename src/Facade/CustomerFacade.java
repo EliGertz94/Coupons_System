@@ -43,7 +43,7 @@ public class CustomerFacade  extends ClientFacade {
      * wasn't purchased already by this client
      * also will check if coupon is not expired by endDate or by the available amount
      */
-        public synchronized void purchaseCoupon(int couponId) throws CouponSystemException {
+        public  void purchaseCoupon(int couponId) throws CouponSystemException {
             if(!couponsDAO.doesCustomerPurchaseExist(this.customerId,couponId)){
 
                 if(couponsDAO.getOneCoupon(couponId).getAmount()>0

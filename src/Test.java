@@ -30,6 +30,7 @@ public class Test {
               * Administrator login
               */
              try {
+                 System.out.println("Admin Login");
                       AdminFacade admin = (AdminFacade) LoginManager.getInstance().logIn("admin@admin.com","admin", ClientType.Administrator);
                        admin.addCompany(new Company("B 22in","B33@gmail.com","12323456A"));
                        Company company=  admin.getOneCompany(6);

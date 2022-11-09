@@ -13,16 +13,13 @@ public class AdminFacade extends ClientFacade {
      * logIn - return true/false if login correct for Admin
      */
     public boolean logIn(String email, String password) {
-       if(email.equals("admin@admin.com") && password.equals("admin")){
-           return true;
-       }
-       return false;
+        return email.equals("admin@admin.com") && password.equals("admin");
     }
 
     /**
      * addCompany -  adding a company if
      */
-    public synchronized void addCompany(Company company) throws CouponSystemException {
+    public  void addCompany(Company company) throws CouponSystemException {
         try{
             if (!companiesDAO.getCompanyByName(company.getName()) &&
                     !companiesDAO.getCompanyByEmail(company.getEmail())) {
@@ -39,7 +36,7 @@ public class AdminFacade extends ClientFacade {
      * updateCompany -   update company if email is unique
      * updating if the name is the same
      */
-    public synchronized void updateCompany(Company company) throws CouponSystemException {
+    public  void updateCompany(Company company) throws CouponSystemException {
 
         try{
 
@@ -58,7 +55,6 @@ public class AdminFacade extends ClientFacade {
                 System.out.println("company not updated,can't change the name of the company, try again.. ");
             }
 
-          //  companiesDAO.updateCompany(company);
         }catch(CouponSystemException e ){
             throw new CouponSystemException("updateCompany at AdminFacade",e);
         }
@@ -68,7 +64,7 @@ public class AdminFacade extends ClientFacade {
     /**
      * deleteCompany - delete Company record using the DAO
      */
-    public synchronized void deleteCompany(Company company) throws CouponSystemException {
+    public  void deleteCompany(Company company) throws CouponSystemException {
         try{
             companiesDAO.deleteCompany(company.getId());
         }catch (CouponSystemException e){
@@ -79,7 +75,7 @@ public class AdminFacade extends ClientFacade {
     /**
      * deleteCompany - delete Company record using the DAO
      */
-    public synchronized ArrayList<Company> getAllCompanies() throws CouponSystemException {
+    public  ArrayList<Company> getAllCompanies() throws CouponSystemException {
         try{
             return companiesDAO.getAllCompanies();
         }catch (CouponSystemException e){
@@ -90,7 +86,7 @@ public class AdminFacade extends ClientFacade {
     /**
      * getOneCompany - returns company object according to company id
      */
-    public synchronized Company getOneCompany(int companyId) throws CouponSystemException {
+    public  Company getOneCompany(int companyId) throws CouponSystemException {
         try {
             return companiesDAO.getOneCompany(companyId);
         } catch (CouponSystemException e) {
@@ -102,7 +98,7 @@ public class AdminFacade extends ClientFacade {
     /**
      * addCustomer -  adding a customer record to customers record
      */
-    public synchronized void addCustomer (Customer customer) throws CouponSystemException {
+    public  void addCustomer (Customer customer) throws CouponSystemException {
         try{
             if (!customersDAO.getCustomerByEmail(customer.getEmail())) {
 
@@ -121,7 +117,7 @@ public class AdminFacade extends ClientFacade {
      * updateCustomer - updating customer and checking for duplicate email input
      * if email is found already it has to be the current object with the current id
      */
-    public synchronized void updateCustomer (Customer customer) throws CouponSystemException {
+    public  void updateCustomer (Customer customer) throws CouponSystemException {
         try{
             if (!customersDAO.getCustomerByEmail(customer.getEmail())) {
                 customersDAO.updateCustomer(customer);
@@ -142,7 +138,7 @@ public class AdminFacade extends ClientFacade {
     /**
      * deleteCustomer - delete customer by id
      */
-    public synchronized void deleteCustomer(int customerId) throws CouponSystemException {
+    public  void deleteCustomer(int customerId) throws CouponSystemException {
         try{
             customersDAO.deleteCustomer(customerId);
         }catch(CouponSystemException e){
@@ -153,7 +149,7 @@ public class AdminFacade extends ClientFacade {
     /**
      * getAllCustomers - returns all the customers
      */
-    public synchronized ArrayList<Customer> getAllCustomers() throws CouponSystemException {
+    public  ArrayList<Customer> getAllCustomers() throws CouponSystemException {
         try{
             return customersDAO.getAllCustomers();
         }catch (CouponSystemException e){
@@ -164,7 +160,7 @@ public class AdminFacade extends ClientFacade {
     /**
      * getOneCustomer - returns customer according to id
      */
-    public synchronized Customer getOneCustomer(int customerId) throws CouponSystemException {
+    public  Customer getOneCustomer(int customerId) throws CouponSystemException {
         try{
             return customersDAO.getOneCustomer(customerId);
         }catch(CouponSystemException e){

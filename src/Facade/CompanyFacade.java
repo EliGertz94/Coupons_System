@@ -3,10 +3,7 @@ package Facade;
 import Beans.Category;
 import Beans.Company;
 import Beans.Coupon;
-import ConnectionPoolRelated.ConnectionPool;
 import Exceptions.CouponSystemException;
-
-import java.sql.*;
 import java.util.ArrayList;
 
 public class CompanyFacade extends ClientFacade{
@@ -48,7 +45,7 @@ public class CompanyFacade extends ClientFacade{
     /**
      * addCoupon - will add a coupon record with unique title
      */
-    public synchronized void updateCoupon(Coupon coupon) throws CouponSystemException {
+    public  void updateCoupon(Coupon coupon) throws CouponSystemException {
 
         if(coupon.getCompanyId() != this.companyId) {
             throw new CouponSystemException("updateCoupon error at CompanyFacade");
