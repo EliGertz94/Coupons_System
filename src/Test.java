@@ -96,7 +96,7 @@ public class Test {
                  CustomerFacade customerFacade = (CustomerFacade) LoginManager.getInstance().logIn
                          ("email1@gmail.com","password",ClientType.Customer);
                  //purchaseCoupon
-                 customerFacade.purchaseCoupon(35);
+                 customerFacade.purchaseCoupon(39);
 
                  //get customer coupons
                  ArrayList<Coupon> customersCoupons = customerFacade.getCustomerCoupons();

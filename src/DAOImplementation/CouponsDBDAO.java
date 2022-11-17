@@ -384,7 +384,6 @@ public class CouponsDBDAO implements CouponsDAO {
     public void deleteExpiredCoupons()  throws CouponSystemException {
             String sql = " delete from coupons where END_DATE < now()";
             Connection con = ConnectionPool.getInstance().getConnection();
-        System.out.println(con);
 
         try {
                 Statement stm = con.createStatement();
