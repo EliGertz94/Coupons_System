@@ -23,13 +23,14 @@ public class AdminFacade extends ClientFacade {
         try{
             if (!companiesDAO.getCompanyByName(company.getName()) &&
                     !companiesDAO.getCompanyByEmail(company.getEmail())) {
+
                 companiesDAO.addCompany(company);
             } else {
 
                 throw new CouponSystemException("addCompany- email or name exist already");
             }
         }catch (CouponSystemException e){
-            throw new CouponSystemException("addCompany at Admin ",e);
+            throw new CouponSystemException("addCompany at Admin Error",e);
         }
     }
 
@@ -92,8 +93,7 @@ public class AdminFacade extends ClientFacade {
             if (!customersDAO.getCustomerByEmail(customer.getEmail())) {
 
                 customersDAO.addCustomer(customer);
-                System.out.println(customer.getFirstName() + "  " + customer.getLastName()
-                        + " was added");
+
             } else {
                 throw new CouponSystemException("this email exist already");
             }

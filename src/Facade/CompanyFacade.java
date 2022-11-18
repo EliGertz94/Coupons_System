@@ -60,7 +60,9 @@ public class CompanyFacade extends ClientFacade{
         Coupon companyCoupon =  couponsDAO.getOneCoupon(couponId);
 
         if(companyCoupon.getCompanyId() != this.getCompanyId()){
-           throw new CouponSystemException("deleteCoupon at CompanyFacade - no permission to delete coupon");
+            System.out.println(companyCoupon.getCompanyId() +" companyCoupon.getCompanyId()");
+            System.out.println(this.getCompanyId() +" this.getCompanyId()");
+           throw new CouponSystemException("deleteCoupon at CompanyFacade - no permission to delete coupon with id "+couponId );
         }
         couponsDAO.deleteCoupon(couponId);
     }

@@ -90,7 +90,7 @@ public class CouponsDBDAO implements CouponsDAO {
     }
 
     /**
-     * updateCoupon - returns true/false if a coupon with an given id exist
+     * updateCoupon - returns true/false if a coupon with a given id exist
      */
     @Override
     public  void updateCoupon(Coupon coupon) throws CouponSystemException {
@@ -107,7 +107,8 @@ public class CouponsDBDAO implements CouponsDAO {
                 " WHERE id = ?";
         Connection con = ConnectionPool.getInstance().getConnection();
         try
-        ( PreparedStatement ps = con.prepareStatement(sql);) {
+          {
+              PreparedStatement ps = con.prepareStatement(sql);
 
             ps.setInt(1,coupon.getCompanyId());
             ps.setInt(2,coupon.getCategory().getCode());
@@ -120,6 +121,7 @@ public class CouponsDBDAO implements CouponsDAO {
             ps.setString(9,coupon.getImage());
             ps.setInt(10,coupon.getId());
             ps.executeUpdate();
+            ps.close();
 
         } catch (SQLException e) {
             throw new CouponSystemException("updateCoupon error at CouponDBDAO");
@@ -389,7 +391,6 @@ public class CouponsDBDAO implements CouponsDAO {
         try {
                 Statement stm = con.createStatement();
                 int rawCount =  stm.executeUpdate(sql);
-                System.out.println("deleteCoupon amount of rows effected "+ rawCount);
             } catch (SQLException e) {
                 throw new CouponSystemException("deleteExpiredCoupons error at CouponDBDAO");
             }finally {

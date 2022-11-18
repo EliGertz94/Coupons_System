@@ -283,7 +283,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
     @Override
     public  boolean getCompanyByName(String companyName) throws CouponSystemException {
 
-        String sql = "Select  * from company where name =  '"+ companyName+"'";
+        String sql = "Select * from company where name =  '"+ companyName+"'";
         Connection con = ConnectionPool.getInstance().getConnection();
         try {
             Statement stm = con.createStatement();
@@ -313,7 +313,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
     public  boolean getCompanyByEmail(String companyEmail) throws CouponSystemException {
 
         String sql = "select * from company where email = '"
-                + companyEmail.replaceAll(" ", "")+"'";
+                + companyEmail+"'";
         Connection con = ConnectionPool.getInstance().getConnection();
         try{
 
