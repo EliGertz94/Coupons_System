@@ -21,7 +21,7 @@ public class CustomerFacade  extends ClientFacade {
      * logIn - returns boolean according to login status
      * will instantiate  the customerId field
      */
-    public  boolean logIn(String email, String password) {
+    public  boolean logIn(String email, String password) throws CouponSystemException {
 
         try {
             customerId =customersDAO.customerByLogIn(email,password).getId();
@@ -29,9 +29,7 @@ public class CustomerFacade  extends ClientFacade {
             return customersDAO.isCustomerExists(email, password);
 
         } catch (CouponSystemException e) {
-            throw new RuntimeException(e);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new CouponSystemException("CustomerFacade - LogIn Error");
         }
 
     }
@@ -51,11 +49,12 @@ public class CustomerFacade  extends ClientFacade {
 
                     couponsDAO.addCouponPurchase(this.customerId, couponId);
                 }else{
-                    System.out.println("can't purchase this coupon expired ");
+
+                    throw new CouponSystemException("purchaseCoupon- can't purchase this coupon expired/sold out ");
 
                 }
             }else{
-                System.out.println("you already have this coupon ");
+                throw new CouponSystemException("purchaseCoupon - purchase was already done - can't make this purchase ");
             }
 
     }

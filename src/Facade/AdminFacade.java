@@ -17,15 +17,16 @@ public class AdminFacade extends ClientFacade {
     }
 
     /**
-     * addCompany -  adding a company if
+     * addCompany -  adding a company if the new company has a unique email and name exist
      */
-    public  void addCompany(Company company) throws CouponSystemException {
+    public void addCompany(Company company) throws CouponSystemException {
         try{
             if (!companiesDAO.getCompanyByName(company.getName()) &&
                     !companiesDAO.getCompanyByEmail(company.getEmail())) {
                 companiesDAO.addCompany(company);
             } else {
-                System.out.println("email or password exist already");
+
+                throw new CouponSystemException("addCompany- email or name exist already");
             }
         }catch (CouponSystemException e){
             throw new CouponSystemException("addCompany at Admin ",e);
@@ -37,23 +38,11 @@ public class AdminFacade extends ClientFacade {
      * updating if the name is the same
      */
     public  void updateCompany(Company company) throws CouponSystemException {
-
         try{
-
-            if(!company.getEmail().equals(companiesDAO.getOneCompany(company.getId()).getEmail())
-            && !companiesDAO.getCompanyByEmail(company.getEmail())
-            ){
-
-                if(company.getName().equals(companiesDAO.getOneCompany(company.getId()).getName())){
-                    companiesDAO.updateCompany(company);
-                    System.out.println(company.getName() + " was updated");
-                }else {
-                    System.out.println("you can't change the name of the company");
+                if(!company.getName().equals(companiesDAO.getOneCompany(company.getId()).getName())){
+                    throw new CouponSystemException("Admin updateCompany -  can't change the name of the company");
                 }
-
-            } else {
-                System.out.println("company not updated,can't change the name of the company, try again.. ");
-            }
+            companiesDAO.updateCompany(company);
 
         }catch(CouponSystemException e ){
             throw new CouponSystemException("updateCompany at AdminFacade",e);
@@ -64,9 +53,9 @@ public class AdminFacade extends ClientFacade {
     /**
      * deleteCompany - delete Company record using the DAO
      */
-    public  void deleteCompany(Company company) throws CouponSystemException {
+    public  void deleteCompany(int comapnyId) throws CouponSystemException {
         try{
-            companiesDAO.deleteCompany(company.getId());
+            companiesDAO.deleteCompany(comapnyId);
         }catch (CouponSystemException e){
             throw  new CouponSystemException(" deleteCompany at Admin ",e);
         }
@@ -106,30 +95,20 @@ public class AdminFacade extends ClientFacade {
                 System.out.println(customer.getFirstName() + "  " + customer.getLastName()
                         + " was added");
             } else {
-                System.out.println("this email exist already");
+                throw new CouponSystemException("this email exist already");
             }
         }catch (CouponSystemException e){
-            throw new CouponSystemException("addCustomer at AdminFacade",e);
+            throw new CouponSystemException("addCustomer at AdminFacade Error",e);
         }
     }
 
     /**
-     * updateCustomer - updating customer and checking for duplicate email input
-     * if email is found already it has to be the current object with the current id
+     *update a new customer - you can't update a customer with a new id
+     * because of DAO wouldn't accept new id
      */
     public  void updateCustomer (Customer customer) throws CouponSystemException {
         try{
-            if (!customersDAO.getCustomerByEmail(customer.getEmail())) {
                 customersDAO.updateCustomer(customer);
-                System.out.println(customer.getFirstName() + " was updated");
-            } else if (customersDAO.getCustomerByEmail(customer.getEmail())
-                    && customer.getEmail().equals(customersDAO.getOneCustomer(customer.getId()).getEmail())) {
-                customersDAO.updateCustomer(customer);
-                System.out.println(customer.getFirstName() + " was updated");
-
-            } else {
-                System.out.println("you are trying to update an email that exist already");
-            }
         }catch (CouponSystemException e ){
             throw new CouponSystemException("updateCustomer at AdminFacade",e);
         }
@@ -137,6 +116,8 @@ public class AdminFacade extends ClientFacade {
 
     /**
      * deleteCustomer - delete customer by id
+     * will work with cascade to delete the purchases -
+     * (*) on delete company without I did it without cascade!
      */
     public  void deleteCustomer(int customerId) throws CouponSystemException {
         try{

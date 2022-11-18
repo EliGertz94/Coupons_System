@@ -18,7 +18,7 @@ public interface CustomersDAO {
      *
      * */
 
-    boolean isCustomerExists(String email,String password) throws CouponSystemException, SQLException;
+    boolean isCustomerExists(String email,String password) throws CouponSystemException;
 
     Customer customerByLogIn(String email, String password) throws CouponSystemException;
 
@@ -33,6 +33,8 @@ public interface CustomersDAO {
     Customer getOneCustomer(int customerId) throws CouponSystemException;
 
     boolean getCustomerByEmail(String companyEmail) throws CouponSystemException;
+
+
     ArrayList<Coupon> getCustomerCoupons(int customerId) throws CouponSystemException;
 
     ArrayList<Coupon> getCustomerCoupons(double maxPrice,int customerId) throws CouponSystemException;

@@ -81,7 +81,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
      * addCompany - add/insert company to DB
      */
     @Override
-    public  int addCompany(Company company) throws CouponSystemException {
+    public int addCompany(Company company) throws CouponSystemException {
 
         String SQL = "insert into company(name,email,password) values(?,?,?)";
         Connection con = ConnectionPool.getInstance().getConnection();
@@ -147,6 +147,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
 
         deleteFromCVC(companyId);
         deleteFromCoupons(companyId);
+        //
         String sql = "DELETE  FROM company  WHERE id= '" + companyId+"'";
         Connection con = ConnectionPool.getInstance().getConnection();
         try {
@@ -154,7 +155,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
             Statement stm = con.createStatement();
             int rawCount =  stm.executeUpdate(sql);
 
-            System.out.println("amount of the rows effected is "+ rawCount );
+            System.out.println("deleteCompany amount of the rows effected is "+ rawCount );
 
         } catch (SQLException e) {
             throw new CouponSystemException("delete company error at CompanyDBDAO");
@@ -176,7 +177,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
             Statement stm = con.createStatement();
             int rawCount =  stm.executeUpdate(sql);
 
-            System.out.println("amount of rows effected "+ rawCount);
+            System.out.println("deleteFromCoupons amount of rows effected "+ rawCount);
 
         } catch (SQLException e) {
             throw new CouponSystemException("delete coupon by company id  error  at CompanyDBDAO ",e);
@@ -190,13 +191,13 @@ public class CompaniesDBDAO implements CompaniesDAO {
      */
     @Override
     public  void deleteFromCVC(int companyId) throws CouponSystemException{
-        String sql = "delete from CUSTOMERS_VS_COUPONS where COUPON_ID  = " + companyId;
+        String sql = "delete from CUSTOMERS_VS_COUPONS where COUPON_ID in (select id from coupons where COMPANY_ID="+companyId + ")";
         Connection con = ConnectionPool.getInstance().getConnection();
         try {
 
             Statement stm = con.createStatement();
             int rawCount =  stm.executeUpdate(sql);
-            System.out.println("amount of rows effected "+ rawCount);
+            System.out.println("deleteFromCVC amount of rows effected "+ rawCount);
 
         } catch (SQLException e) {
             throw new CouponSystemException("deleteFromCVC error at CompanyDBDAO");

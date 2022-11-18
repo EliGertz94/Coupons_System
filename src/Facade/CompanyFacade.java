@@ -22,7 +22,7 @@ public class CompanyFacade extends ClientFacade{
             return  companiesDAO.isCompanyExists(email,password);
 
         } catch (CouponSystemException e) {
-           throw new CouponSystemException("logIn at CompanyFacade",e);
+           throw new CouponSystemException("logIn at CompanyFacade Error",e);
         }
     }
 
@@ -34,10 +34,10 @@ public class CompanyFacade extends ClientFacade{
             if (!couponsDAO.uniqueTitleByCompany(coupon.getCompanyId(), coupon.getTitle())) {
                 couponsDAO.addCoupon(coupon);
             } else {
-                throw new CouponSystemException("this title for a coupon exist already");
+                throw new CouponSystemException("addCoupon - This title for a coupon exist already");
             }
         }else {
-            System.out.println("not your company id");
+            throw new CouponSystemException("addCoupon - the coupon does not belong to the company");
         }
 
     }
@@ -84,11 +84,11 @@ public class CompanyFacade extends ClientFacade{
     /**
      * getCompanyDetails - returns company details including the coupons of the company
      */
-    public  Company getCompanyDetails( ) throws CouponSystemException {
+    public  Company getCompanyDetails() throws CouponSystemException {
 
        Company company = companiesDAO.getOneCompany(this.getCompanyId());
 
-        company.setCoupons(companiesDAO.getAllCompanyCoupons(this.getCompanyId()));
+       company.setCoupons(companiesDAO.getAllCompanyCoupons(this.getCompanyId()));
 
        return company;
     }

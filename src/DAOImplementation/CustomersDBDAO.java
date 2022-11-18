@@ -151,10 +151,8 @@ public class CustomersDBDAO implements CustomersDAO {
             if(rawCount ==0){
                 System.out.println("no customer with such id ");
             }else{
-                System.out.println(customerId+ " was deleted");
+                System.out.println("deleteCustomer - "+ customerId+ " was deleted");
             }
-
-
 
         } catch (SQLException e) {
             throw new CouponSystemException("deleteCustomer error at CustomersDBDAO");
@@ -240,7 +238,7 @@ public class CustomersDBDAO implements CustomersDAO {
      * getCustomerByEmail -  returns true/false if customer exist with given email
      */
     @Override
-    public  boolean getCustomerByEmail(String customerEmail) throws CouponSystemException {
+    public boolean getCustomerByEmail(String customerEmail) throws CouponSystemException {
 
         String sql = "select * from customer where email = '"+ customerEmail.replaceAll(" ", "")+"'";
         Connection con = ConnectionPool.getInstance().getConnection();
@@ -266,8 +264,8 @@ public class CustomersDBDAO implements CustomersDAO {
 
         }
 
-
     }
+
 
     /**
      * getCustomerCoupons -  get all the coupons of a customer by his id

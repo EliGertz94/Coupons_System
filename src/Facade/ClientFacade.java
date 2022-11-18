@@ -14,8 +14,6 @@ import Exceptions.CouponSystemException;
  */
 public abstract class ClientFacade {
 
-
-
     protected    CompaniesDAO companiesDAO = new CompaniesDBDAO();
     protected    CouponsDAO couponsDAO = new CouponsDBDAO();
     protected    CustomersDAO customersDAO=  new CustomersDBDAO();

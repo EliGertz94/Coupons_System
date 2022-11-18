@@ -23,6 +23,7 @@ public class ConnectionPool {
     static {
         try {
             instance = new ConnectionPool();
+            System.out.println("connection pool open");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -64,13 +65,11 @@ public class ConnectionPool {
     }
 
     public synchronized void closeAllConnections() throws CouponSystemException {
-        System.out.println("waiting close");
         this.isActive = false;
 
         while (this.connections.size() < MAX_CONNECTIONS) {
             try {
                 wait();
-                System.out.println("waiting to close");
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -82,6 +81,7 @@ public class ConnectionPool {
                 throw new CouponSystemException("closeAllConnections failure", e);
             }
         }
+        System.out.println("connection pool closed");
     }
 
 

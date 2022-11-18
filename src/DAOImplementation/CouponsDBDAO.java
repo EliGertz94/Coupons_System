@@ -204,6 +204,7 @@ public class CouponsDBDAO implements CouponsDAO {
 
     /**
      * getOneCoupon - returns coupon object by coupon id
+     * if not record was found will return a null object
      */
     @Override
     public  Coupon getOneCoupon(int couponId) throws CouponSystemException {
@@ -326,7 +327,7 @@ public class CouponsDBDAO implements CouponsDAO {
     }
 
     /**
-     * uniqueTitleByCompany - return true/false if there is a coupon with companyId and a certain title
+     * uniqueTitleByCompany - return true/false if there is a coupon with companyId and a certain title already
      */
     @Override
     public  boolean uniqueTitleByCompany(int companyId,String title ) throws CouponSystemException {
