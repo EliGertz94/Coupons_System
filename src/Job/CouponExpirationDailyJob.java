@@ -19,7 +19,7 @@ public class CouponExpirationDailyJob extends Thread {
         while (quit) {
             try {
                 couponsDAO.deleteExpiredCoupons();
-                Thread.sleep(43_20); // 12 hours _000
+                Thread.sleep(43_200_000); // 12 hours
             } catch (InterruptedException e) {
                 System.out.println("Thread was interrupted");
                 break;
