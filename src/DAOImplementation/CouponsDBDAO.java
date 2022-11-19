@@ -296,8 +296,8 @@ public class CouponsDBDAO implements CouponsDAO {
             pstmt.executeUpdate();
             ResultSet resultSet = pstmt.getGeneratedKeys();
             resultSet.next();
-            Coupon coupon = getOneCoupon(couponId);
             pstmt.close();
+            Coupon coupon = getOneCoupon(couponId);
             changeCouponAmount(couponId,coupon.getAmount()+1);
         } catch (SQLException e) {
             throw new CouponSystemException("deleteCouponPurchase error at couponDBDAO");

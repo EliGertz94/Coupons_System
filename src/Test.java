@@ -72,10 +72,10 @@ public class Test {
 //
 //                   companyFacade.addCoupon(new Coupon
 //                           (companyFacade.getCompanyId(), Category.Food, "coup1", "coupon description 1", LocalDateTime.now(), LocalDateTime.of(2022, 12, 12, 12, 12),
-//                                   100, 200, "String image"));
+//                                   100, 150, "String image"));
 //                 companyFacade.addCoupon(new Coupon
 //                         (companyFacade.getCompanyId(), Category.Food, "coup2", "coupon description 1", LocalDateTime.now(), LocalDateTime.of(2022, 12, 12, 12, 12),
-//                                 100, 200, "String image"));
+//                                 100, 210, "String image"));
 //                 companyFacade.addCoupon(new Coupon
 //                         (companyFacade.getCompanyId(), Category.Food, "coup3", "coupon description 1", LocalDateTime.now(), LocalDateTime.of(2022, 12, 12, 12, 12),
 //                                 100, 200, "String image"));
@@ -85,15 +85,17 @@ public class Test {
                          (companyFacade.getCompanyId(), Category.Electricity, "coup4", "coupon description 1", LocalDateTime.now(),
                                  LocalDateTime.of(2022, 12, 12, 12, 12),
                                  100, 200, "String image");
-                 coupon.setId(4);
+                    coupon.setId(3);
 //                 Coupon coupon = companyFacade.getAllCompanyCoupons().get(0);
 //                 coupon.setTitle("blablabla");
 //                 coupon.setCategory(Category.Electricity);
-//                 System.out.println(coupon);
-                 companyFacade.updateCoupon(coupon);
-        //   ----return all the coupons of the company
+//
+
+              //   companyFacade.updateCoupon(coupon);
+
+
 //        ArrayList<Coupon> companyCouponsByMaxPrice = companyFacade.getAllCompanyCoupons(250);
-    //    //get logged in company details
+
 
     //        System.out.println("companyCouponsByMaxPrice" + companyCouponsByMaxPrice);
 
@@ -102,9 +104,13 @@ public class Test {
                  CustomerFacade customerFacade = (CustomerFacade) LoginManager.getInstance().logIn
                          ("eli@gmail.com", "AV1234", ClientType.Customer);
 
-//                     customerFacade.purchaseCoupon(1);
+                 //  customerFacade.purchaseCoupon(1);
 //                     customerFacade.purchaseCoupon(2);
 //                     customerFacade.purchaseCoupon(3);
+
+                 //הוספתי את האופציה הזאת אפילו שלא היה אותה בהוראות (נראה לי חשוב )
+
+                 customerFacade.returnCouponPurchase(6);
 
 //                     //get customer coupons
 //                     ArrayList<Coupon> customersCoupons = customerFacade.getCustomerCoupons();

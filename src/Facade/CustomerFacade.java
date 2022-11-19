@@ -58,6 +58,21 @@ public class CustomerFacade  extends ClientFacade {
             }
 
     }
+    /**
+     * returnCoupon -
+     */
+    public  void returnCouponPurchase(int couponId) throws CouponSystemException {
+        if(couponsDAO.doesCustomerPurchaseExist(this.customerId,couponId)){
+
+
+                couponsDAO.deleteCouponPurchase(this.customerId, couponId);
+
+        }else{
+            throw new CouponSystemException("returnCoupon - this coupon purches does not exist ");
+        }
+
+    }
+
 
 
     /**
